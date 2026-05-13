@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Nunito+Sans:wght@300;400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Gebelik Takip — Design System
+   Tüm renkler HSL. Doğrudan renk kullanmak yerine bu token'ları kullan.
+*/
+
+@layer base {
+  :root {
+    /* Brand palette (HSL) */
+    --background: 204 26% 97%;        /* #F4F7F9 */
+    --foreground: 356 33% 53%;        /* #B25E63 (text) */
+
+    --card: 0 0% 100%;
+    --card-foreground: 356 33% 53%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 356 33% 53%;
+
+    --primary: 201 33% 55%;           /* #6797B2 */
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 201 35% 45%;
+
+    --secondary: 357 100% 81%;        /* #FFA0A5 */
+    --secondary-foreground: 356 40% 30%;
+
+    --muted: 204 26% 93%;
+    --muted-foreground: 356 18% 55%;
+
+    --accent: 203 50% 61%;            /* #6CA9CC */
+    --accent-foreground: 0 0% 100%;
+
+    --accent-pink: 326 67% 72%;       /* #E886BC */
+
+    --destructive: 0 75% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 204 25% 88%;
+    --input: 204 25% 88%;
+    --ring: 201 33% 55%;
+
+    --radius: 0.875rem;
+
+    /* Sidebar — Primary renkli */
+    --sidebar-background: 201 33% 55%;          /* #6797B2 */
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 201 35% 35%;
+    --sidebar-accent: 201 35% 48%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 201 30% 48%;
+    --sidebar-ring: 357 100% 81%;
+
+    /* Gradients & shadows */
+    --gradient-primary: linear-gradient(135deg, hsl(201 33% 55%), hsl(203 50% 61%));
+    --gradient-soft: linear-gradient(135deg, hsl(204 40% 97%), hsl(326 60% 96%));
+    --gradient-warm: linear-gradient(135deg, hsl(357 100% 81%), hsl(326 67% 78%));
+
+    --shadow-soft: 0 4px 20px -6px hsl(201 33% 55% / 0.15);
+    --shadow-card: 0 2px 12px -2px hsl(356 33% 53% / 0.08);
+    --shadow-glow: 0 8px 30px -8px hsl(357 100% 75% / 0.55);
+  }
+
+  .dark {
+    --background: 356 25% 10%;
+    --foreground: 204 26% 95%;
+    --card: 356 22% 13%;
+    --card-foreground: 204 26% 95%;
+    --popover: 356 22% 13%;
+    --popover-foreground: 204 26% 95%;
+    --primary: 201 33% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 357 70% 70%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 356 18% 18%;
+    --muted-foreground: 204 20% 70%;
+    --accent: 203 50% 55%;
+    --accent-foreground: 0 0% 100%;
+    --border: 356 18% 22%;
+    --input: 356 18% 22%;
+    --ring: 201 33% 55%;
+    --sidebar-background: 201 33% 30%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 357 100% 81%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 201 30% 38%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 201 25% 25%;
+    --sidebar-ring: 357 100% 81%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+@layer utilities {
+  .bg-gradient-primary { background: var(--gradient-primary); }
+  .bg-gradient-soft { background: var(--gradient-soft); }
+  .bg-gradient-warm { background: var(--gradient-warm); }
+  .shadow-soft { box-shadow: var(--shadow-soft); }
+  .shadow-card { box-shadow: var(--shadow-card); }
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+}
