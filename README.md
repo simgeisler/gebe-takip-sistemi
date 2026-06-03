@@ -10,7 +10,7 @@
 - Takvim etkinlikleri
 - Makale kütüphanesi
 - Forum (sorular, yanıtlar, beğeniler)
-- “Bebeğimle konuş” sohbet ekranı
+- “Gebelik Asistan” sohbet ekranı (OpenRouter üzerinden AI destekli)
 - PDF rapor gibi API uçları
 
 **Veri** sunucuda tutulur: tarayıcıdaki arayüz (frontend), HTTP ile FastAPI sunucusuna (backend) bağlanır; backend **PostgreSQL**e yazar/okur. Bu projede veritabanı pratikte **[Supabase](https://supabase.com)** üzerinde barındırılan PostgreSQL ile kullanılır (`DATABASE_URL`). Yerel bir Postgres sunucusu da aynı şekilde kullanılabilir.
@@ -62,9 +62,12 @@ Uygulama **Supabase Auth veya Supabase JavaScript istemcisini** doğrudan kullan
 
 ```env
 DATABASE_URL=postgresql://postgres.[PROJECT_REF]:[YOUR_PASSWORD]@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
+OPENROUTER_API_KEY=sk-or-v1-...
+OPENROUTER_MODEL=openai/gpt-oss-120b:free
 ```
 
 - Gerçek host, port, kullanıcı ve şifreyi **kendi Supabase panelinizdeki** “Connection string” alanından kopyalayın; yukarıdaki satır sadece biçim örneğidir.
+- `OPENROUTER_API_KEY` sohbet asistanı için zorunludur; anahtar [openrouter.ai](https://openrouter.ai/) hesabından alınır (aşağıdaki **10. bölüm**).
 - **Şifreleri repoya eklemeyin**; `.env` dosyası `.gitignore` içinde kalmalıdır. `alembic upgrade head` çalıştırırken `DATABASE_URL` ortam değişkeni yeterlidir (`alembic/env.py` bunu okuyup `sqlalchemy.url` olarak ayarlar).
 
 ### Yerel PostgreSQL
@@ -132,6 +135,7 @@ Frontend **sadece kullanıcı arayüzü ve istemci tarafı mantığıdır**; kal
 
 Kullanıcı bir form doldurduğunda veya liste yüklediğinde, React sayfaları `api.ts` üzerinden FastAPI’ye JSON isteği gönderir; gelen cevaba göre ekran güncellenir.
 
+
 ---
 
 ## 7. Frontend’de kullanılan başlıca araçlar ve kütüphaneler
@@ -171,13 +175,23 @@ Kullanıcı bir form doldurduğunda veya liste yüklediğinde, React sayfaları 
 | **python-jose** | JWT işlemleri |
 | **passlib** + **bcrypt** | Parola özetleme |
 | **python-dotenv** | `.env` dosyasından `DATABASE_URL` vb. okuma |
+| **httpx** | OpenRouter’a `POST /api/v1/chat/completions` istekleri (`openrouter_client.py`) |
 | **pytest** + **httpx** | API testleri |
+| **OpenRouter** | LLM sağlayıcısı; varsayılan model **OpenAI: gpt-oss-120b (free)** → `openai/gpt-oss-120b:free` |
 | **Supabase** (altyapı) | Barındırılan **PostgreSQL**; ekstra bir `supabase` Python paketi yok, yalnızca Postgres URI’si (`DATABASE_URL`) |
 
 Uygulama girişi: kök `backend/main.py` → `app.main` içindeki FastAPI örneği; yönlendirmeler `backend/app/routers/` altında modüllere ayrılmıştır.
 
 ---
+- **Tek kalıcı veri deposu:** **PostgreSQL**. Projede bu genelde **Supabase** projesindeki Postgres örneğidir; bağlantı `DATABASE_URL` ile verilir.
+- **ORM:** SQLAlchemy (`backend/app/models/`, `backend/app/core/database.py`).
+- **Şema değişiklikleri:** Alembic migrasyonları (`alembic upgrade head`).
 
+**Frontend ↔ Supabase:** Arayüz doğrudan Supabase’e bağlanmaz; `@supabase/supabase-js` kullanılmaz. Tarayıcı yalnızca **kendi FastAPI backend’inize** istek atar; veritabanı erişimi yalnızca backend sürecinde olur. Bu sayede RLS veya Supabase Dashboard ile yine aynı Postgres üzerinde yönetim yapabilirsiniz; uygulama kodu tarafında “bulut veritabanı = Supabase Postgres URI” modelidir.
+
+**Ayrı bir “frontend içi veritabanı” yoktur**; geliştirmede veri her zaman **backend → PostgreSQL (Supabase veya yerel)** hattındadır.
+
+---
 ## 9. Veritabanı katmanı ve Supabase’in yeri
 
 - **Tek kalıcı veri deposu:** **PostgreSQL**. Projede bu genelde **Supabase** projesindeki Postgres örneğidir; bağlantı `DATABASE_URL` ile verilir.
@@ -189,3 +203,83 @@ Uygulama girişi: kök `backend/main.py` → `app.main` içindeki FastAPI örne�
 **Ayrı bir “frontend içi veritabanı” yoktur**; geliştirmede veri her zaman **backend → PostgreSQL (Supabase veya yerel)** hattındadır.
 
 ---
+
+## 10. OpenRouter ile AI entegrasyonu (Gebelik Asistanı)
+
+**Bebeğimle konuş** ekranındaki yanıtlar, tarayıcıdan doğrudan bir modele gitmez. Frontend `POST /api/v1/chat/assistant` çağırır; backend bağlamı hazırlayıp **[OpenRouter](https://openrouter.ai/)** üzerinden LLM’e iletir ve yanıtı PostgreSQL’deki sohbet tablolarına kaydeder.
+
+### Kullanılan model
+
+| OpenRouter panelinde görünen ad | Ortam değişkeni / API `model` değeri |
+|--------------------------------|--------------------------------------|
+| **OpenAI: gpt-oss-120b (free)** | `openai/gpt-oss-120b:free` |
+
+Bu, OpenRouter’daki ücretsiz katmanlı **gpt-oss-120b** modelidir. `OPENROUTER_MODEL` tanımlı değilse backend aynı değeri varsayılan olarak kullanır (`backend/app/services/openrouter_client.py`).
+
+### Ortam değişkenleri (`backend/.env`)
+
+| Değişken | Zorunlu | Açıklama | Varsayılan |
+|----------|---------|----------|------------|
+| `OPENROUTER_API_KEY` | Evet | OpenRouter API anahtarı (`sk-or-v1-...`) | — |
+| `OPENROUTER_MODEL` | Hayır | Model kimliği | `openai/gpt-oss-120b:free` |
+| `OPENROUTER_HTTP_REFERER` | Hayır | OpenRouter `HTTP-Referer` başlığı | `http://localhost:5173` |
+| `OPENROUTER_APP_TITLE` | Hayır | OpenRouter `X-Title` başlığı (ASCII) | `Gebelik Asistani` |
+
+Örnek `backend/.env` satırları için `backend/.env.example` dosyasına bakın. API anahtarını repoya eklemeyin.
+
+### Anahtar alma
+
+1. [openrouter.ai](https://openrouter.ai/) üzerinde hesap açın.
+2. **API Keys** bölümünden yeni anahtar oluşturun.
+3. Anahtarı `backend/.env` içindeki `OPENROUTER_API_KEY` alanına yapıştırın.
+4. Backend’i yeniden başlatın (`uvicorn` süreci `.env` değişikliklerini yeniden yükler).
+
+### Kodda akış (özet)
+
+```
+BabyChat.tsx  →  POST /api/v1/chat/assistant
+       →  chat_service.py  →  assistant_service.py (sistem promptu + bağlam)
+       →  openrouter_client.chat_completion()
+       →  https://openrouter.ai/api/v1/chat/completions
+       →  yanıt chat_messages tablosuna yazılır
+```
+
+| Katman | Dosya |
+|--------|-------|
+| OpenRouter istemcisi | `backend/app/services/openrouter_client.py` |
+| Prompt ve bağlam | `backend/app/services/assistant_service.py` |
+| Sohbet CRUD + orchestration | `backend/app/services/chat_service.py` |
+| HTTP uçları | `backend/app/routers/chat_router.py` |
+| Arayüz | `frontend/src/pages/BabyChat.tsx` |
+
+İstemci `httpx` ile OpenRouter’a istek atar; istek gövdesinde `reasoning: { enabled: true, exclude: true }` kullanılır (iç düşünme ayrı alanda kalır, sohbet metni `content` üzerinden okunur). Zaman aşımı yaklaşık **90 saniye**dir.
+
+### Hata kodları (kullanıcıya yansıyan)
+
+| Durum | HTTP |
+|--------|------|
+| `OPENROUTER_API_KEY` yok / boş | 503 |
+| OpenRouter veya ağ hatası | 502 |
+| Yanıt süresi aşıldı | 504 |
+
+### Ek dokümantasyon
+
+Detaylı mimari ve güvenlik kuralları `prodocs/` altında: `openrouter-entegrasyonu.md`, `gebelik-asistani-mimari.md`, `chat-akisi.md`, `sistem-promptlari.md`.
+
+---
+
+## 11. Sorun giderme (kısa)
+
+| Durum | Kontrol |
+|--------|---------|
+| Backend açılmıyor / DB hatası | `.env` içinde `DATABASE_URL` doğru mu; Supabase’te proje uyku modundan uyandı mı; yerel Postgres ise servis çalışıyor mu; `alembic upgrade head` çalıştı mı? |
+| Frontend API’ye ulaşamıyor | Backend 8000’de mi; `VITE_API_URL` doğru mu; tarayıcı konsolunda CORS veya ağ hatası |
+| CORS hatası | Backend `app/main.py` içinde `CORSMiddleware` izin verilen origin listesi; geliştirme adresiniz (ör. `http://localhost:8080`) listede veya regex ile kapsanıyor mu? |
+| Sohbet “AI yapılandırılmamış” / 503 | `backend/.env` içinde `OPENROUTER_API_KEY` var mı; backend yeniden başlatıldı mı? |
+| Sohbet 502 / boş yanıt | `OPENROUTER_MODEL` doğru mu (`openai/gpt-oss-120b:free`); OpenRouter’da ücretsiz model kotası dolmuş olabilir |
+
+---
+
+
+
+
