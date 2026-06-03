@@ -16,23 +16,32 @@
 **Veri** sunucuda tutulur: tarayıcıdaki arayüz (frontend), HTTP ile FastAPI sunucusuna (backend) bağlanır; backend **PostgreSQL**e yazar/okur. Bu projede veritabanı pratikte **[Supabase](https://supabase.com)** üzerinde barındırılan PostgreSQL ile kullanılır (`DATABASE_URL`). Yerel bir Postgres sunucusu da aynı şekilde kullanılabilir.
 
  ## Ekran Görüntüleri
- <img width="1361" height="734" alt="Image" src="https://github.com/user-attachments/assets/bf35ec38-e8db-4460-9fbd-319b82b9d3a4" />
+<img width="1919" height="1031" alt="Image" src="https://github.com/user-attachments/assets/6e9888c6-b050-4931-82a3-b286184428a3" />
 
-<img width="1366" height="723" alt="Image" src="https://github.com/user-attachments/assets/8c12e0fc-0205-4057-9e77-2dcd5b6765ca" />
+<img width="1919" height="1029" alt="Image" src="https://github.com/user-attachments/assets/6590575f-cd99-45e7-8de3-22c788933204" />
 
-<img width="1361" height="721" alt="Image" src="https://github.com/user-attachments/assets/b616959c-66db-4e0f-a338-2d7e8fa2a9fc" />
+<img width="1919" height="1028" alt="Image" src="https://github.com/user-attachments/assets/c1fb8e94-b897-4fce-a43a-0a7286f71795" />
 
-<img width="1366" height="727" alt="Image" src="https://github.com/user-attachments/assets/186da2f3-26b0-467d-9be4-d3657aba1896" />
+<img width="1919" height="1023" alt="Image" src="https://github.com/user-attachments/assets/83b01a79-9f93-4f4c-a953-06f0d1486374" />
 
-<img width="1366" height="729" alt="Image" src="https://github.com/user-attachments/assets/f2ac2cfa-ec5f-4f46-8ea7-bfc7b33990e3" />
+<img width="1916" height="1022" alt="Image" src="https://github.com/user-attachments/assets/951d0baf-6e71-4a8b-9979-b67f9ceafbe1" />
 
-<img width="1364" height="728" alt="Image" src="https://github.com/user-attachments/assets/36f4164c-220b-4a84-bb88-c8b47fe82ada" />
+<img width="1919" height="1018" alt="Image" src="https://github.com/user-attachments/assets/2cd653db-9d3e-4a08-a3ed-a3db95bda873" />
 
-<img width="1366" height="729" alt="Image" src="https://github.com/user-attachments/assets/e8182d19-ba82-4012-aabc-90180344ccc4" />
+<img width="1919" height="1032" alt="Image" src="https://github.com/user-attachments/assets/891a2997-ac8e-4253-b482-05f33793aae3" />
 
-<img width="1366" height="722" alt="Image" src="https://github.com/user-attachments/assets/7d9f615f-8b4e-4a07-8dc9-d466356bd9ed" />
+<img width="1919" height="1020" alt="Image" src="https://github.com/user-attachments/assets/eae5cbd8-b96b-4966-ade0-a9590e9be68e" />
 
-<img width="1366" height="730" alt="Image" src="https://github.com/user-attachments/assets/bad8372c-56f1-4998-acb4-1d9e6a1c2974" />
+<img width="1917" height="1035" alt="Image" src="https://github.com/user-attachments/assets/b3d41f62-56a3-49ff-b650-d476a2bebbbc" />
+
+<img width="1919" height="1030" alt="Image" src="https://github.com/user-attachments/assets/902d245c-e341-498d-9bff-443d16665c32" />
+
+<img width="1919" height="1025" alt="Image" src="https://github.com/user-attachments/assets/80bc3c42-1102-4fc2-955b-fd09b5b272b0" />
+
+<img width="1919" height="1016" alt="Image" src="https://github.com/user-attachments/assets/1b66b062-befa-43eb-8bdf-e665846b63f3" />
+
+<img width="1919" height="1032" alt="Image" src="https://github.com/user-attachments/assets/ad05c5f1-9bef-45b4-a3a0-43d11290a20a" />
+
 
 ---
 
