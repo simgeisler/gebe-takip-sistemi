@@ -82,8 +82,8 @@ export function AppSidebar() {
           <Sparkles className="h-5 w-5 shrink-0" />
           {!collapsed && (
             <div className="flex-1">
-              <p className="font-serif text-sm leading-tight">Bebeğimle Konuş</p>
-              <p className="text-[11px] opacity-80">AI ile sohbet et</p>
+              <p className="font-serif text-sm leading-tight">Gebelik Asistanı</p>
+              <p className="text-[11px] opacity-80">AI destekli sohbet</p>
             </div>
           )}
         </NavLink>

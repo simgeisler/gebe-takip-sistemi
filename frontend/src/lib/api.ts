@@ -147,11 +147,38 @@ class ApiClient {
     });
   }
 
-  // Chat endpoints
-  async sendMessage(message: string) {
-    return this.request('/chat', {
-      method: 'POST',
-      body: JSON.stringify({ message }),
+  // Chat endpoints (Gebelik Asistanı — oturumlar)
+  async getChatSessions() {
+    return this.request<
+      { id: number; title: string; created_at?: string; updated_at?: string }[]
+    >("/chat/sessions");
+  }
+
+  async createChatSession() {
+    return this.request<{ id: number; title: string; created_at?: string; updated_at?: string }>(
+      "/chat/sessions",
+      { method: "POST" }
+    );
+  }
+
+  async deleteChatSession(sessionId: number) {
+    return this.request(`/chat/sessions/${sessionId}`, { method: "DELETE" });
+  }
+
+  async getSessionMessages(sessionId: number) {
+    return this.request<{ id: number; from: "baby" | "me"; text: string }[]>(
+      `/chat/sessions/${sessionId}/messages`
+    );
+  }
+
+  async sendAssistantMessage(sessionId: number, text: string) {
+    return this.request<{
+      user_message: { id: number; from: "baby" | "me"; text: string };
+      assistant_message: { id: number; from: "baby" | "me"; text: string };
+      session: { id: number; title: string };
+    }>(`/chat/sessions/${sessionId}/assistant`, {
+      method: "POST",
+      body: JSON.stringify({ text }),
     });
   }
 

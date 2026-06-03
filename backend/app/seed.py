@@ -1,23 +1,13 @@
 from sqlalchemy.orm import Session
 
-from app.models import ForumCategory, LibraryItem, WeeklyMetadata
+from app.data.weekly_baby_reference import upsert_weekly_baby_metadata_session
+from app.models import ForumCategory, LibraryItem
+from app.models.entities import WeeklyMetadata
 
 
 def seed_data(db: Session) -> None:
-    if db.query(WeeklyMetadata).count() == 0:
-        for week_number in range(1, 43):
-            db.add(
-                WeeklyMetadata(
-                    week_number=week_number,
-                    fetus_size_cm=round(0.2 * week_number + 1.4, 2),
-                    fetus_weight_gr=round(6.5 * week_number * week_number + 20, 2),
-                    development_milestones_json={"week": week_number, "summary": f"{week_number}. hafta gelisim ozeti"},
-                    symptom_analysis_text=f"{week_number}. haftada gorulebilecek belirtiler.",
-                    comparison_object_name=f"Referans Nesne {week_number}",
-                    image_url=f"https://example.com/weeks/{week_number}.png",
-                )
-            )
-        db.commit()
+    if db.query(WeeklyMetadata).count() < 42:
+        upsert_weekly_baby_metadata_session(db)
 
     if db.query(ForumCategory).count() == 0:
         for category_name in ["Hastane Onerileri", "Doktor Yorumlari", "Urun Tavsiyeleri"]:

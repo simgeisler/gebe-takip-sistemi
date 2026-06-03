@@ -43,7 +43,7 @@ app.add_middleware(
 )
 
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse, Response
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
@@ -67,6 +67,16 @@ for router in (
     wellbeing_router,
 ):
     app.include_router(router, prefix=API_PREFIX)
+
+
+@app.get("/", include_in_schema=False)
+def root():
+    return RedirectResponse(url="/docs")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return Response(status_code=204)
 
 
 @app.get("/healthz")

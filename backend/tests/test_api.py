@@ -47,6 +47,10 @@ def test_dashboard_and_frontend_shapes():
     assert "hero" in d and "summary_cards" in d
     assert "weight_chart" in d and "upcoming" in d
     assert "baby" in d["summary_cards"]
+    baby = d["summary_cards"]["baby"]
+    assert baby["value"] != "Bilgi bulunamadı"
+    assert baby["hint"].startswith("Boy:")
+    assert "bilgi bulunamadı" not in baby["hint"].lower()
 
     lib = client.get("/api/v1/library/articles")
     assert lib.status_code == 200
@@ -61,7 +65,10 @@ def test_dashboard_and_frontend_shapes():
     t0 = threads[0]
     assert "cat" in t0 and "author" in t0 and "votes" in t0 and "id" in t0
 
-    chat = client.get("/api/v1/chat/messages", headers=h)
+    chat_sess = client.post("/api/v1/chat/sessions", headers=h)
+    assert chat_sess.status_code == 200
+    sid = chat_sess.json()["id"]
+    chat = client.get(f"/api/v1/chat/sessions/{sid}/messages", headers=h)
     assert chat.status_code == 200
     msgs = chat.json()
     assert len(msgs) >= 1

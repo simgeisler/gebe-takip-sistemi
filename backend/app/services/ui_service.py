@@ -1,6 +1,5 @@
 """Dashboard.tsx bölümleriyle aynı yapıda özet (hero, summary_cards, weight_chart, upcoming)."""
 
-import re
 from calendar import monthrange
 from datetime import date, datetime, time as time_cls
 
@@ -8,6 +7,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from ..core.pregnancy import calculate_status
+from ..data.weekly_baby_reference import NOT_FOUND_LABEL
 from ..models.entities import CalendarEvent, DailyLog, User, WeeklyMetadata
 
 UPCOMING_DASHBOARD_LIMIT = 2
@@ -15,32 +15,30 @@ UPCOMING_DASHBOARD_LIMIT = 2
 _TYPE_LABEL = {"ilac": "İlaç", "randevu": "Randevu", "etkinlik": "Etkinlik"}
 
 
-def _comparison_for_week(week: int) -> str:
-    if week <= 12:
-        return "nar"
-    if week <= 20:
-        return "limon"
-    if week <= 28:
-        return "patlıcan"
-    if week <= 36:
-        return "marul"
-    return "karpuz"
+def _weekly_metadata_for_week(week: int, db: Session) -> WeeklyMetadata | None:
+    return (
+        db.query(WeeklyMetadata)
+        .filter(WeeklyMetadata.week_number == min(week, 42))
+        .first()
+    )
 
 
-def _fmt_kg(weight_gr: int) -> str:
-    kg = weight_gr / 1000
-    if kg >= 1:
-        return f"~ {kg:.1f} kg"
-    return f"~ {weight_gr} g"
+def _baby_summary_from_metadata(week: int, db: Session) -> tuple[str, str, str | None]:
+    meta = _weekly_metadata_for_week(week, db)
+    weight = (meta.baby_weight or "").strip() if meta else ""
+    length = (meta.baby_length or "").strip() if meta else ""
+    size = (meta.baby_size or "").strip() if meta else ""
+    value = weight or NOT_FOUND_LABEL
+    hint = f"Boy: {length}" if length else f"Boy: {NOT_FOUND_LABEL.lower()}"
+    return value, hint, size or None
 
 
-def _parse_first_number(value: str | None) -> float | None:
-    if not value:
-        return None
-    m = re.search(r"(\d+(?:[.,]\d+)?)", value)
-    if not m:
-        return None
-    return float(m.group(1).replace(",", "."))
+def _hero_summary_text(week: int, baby_size: str | None) -> str:
+    if baby_size:
+        size_part = f"Bebeğin bir {baby_size} büyüklüğünde"
+    else:
+        size_part = f"Bebeğinin büyüklük bilgisi {NOT_FOUND_LABEL.lower()}"
+    return f"Şu an {week}. haftadasın. {size_part} ve seni duyabiliyor 💛"
 
 
 def _parse_time_hm(value: str | None) -> time_cls:
@@ -126,29 +124,32 @@ def build_dashboard(user_id: int, db: Session) -> dict:
     days_left = max(0, int(status["days_to_due"]))
     progress = min(100.0, (week / total_weeks) * 100)
 
-    baby_weight_gr = int(week * 32)
-    baby_cm = float(round(week * 0.95, 1))
-    meta = db.query(WeeklyMetadata).filter(WeeklyMetadata.week_number == min(week, 42)).first()
-    if meta:
-        w = _parse_first_number(meta.baby_weight)
-        if w is not None:
-            if "kg" in (meta.baby_weight or "").lower():
-                baby_weight_gr = int(w * 1000)
-            else:
-                baby_weight_gr = int(w)
-        l = _parse_first_number(meta.baby_length)
-        if l is not None:
-            baby_cm = float(l)
+    baby_value, baby_hint, baby_size = _baby_summary_from_metadata(week, db)
 
     logs = db.query(DailyLog).filter(DailyLog.user_id == user_id).order_by(DailyLog.date.asc(), DailyLog.id.asc()).all()
 
     last_bp = next((l for l in reversed(logs) if l.systolic is not None and l.diastolic is not None), None)
     bp_value = f"{last_bp.systolic} / {last_bp.diastolic}" if last_bp else "— / —"
-    bp_hint = "Son ölçüm" if last_bp else "Henüz kayıt yok"
+    if last_bp:
+        bp_hint = (
+            f"Son ölçüm · {last_bp.date.strftime('%d.%m.%Y')}"
+            if last_bp.date
+            else "Son ölçüm"
+        )
+    else:
+        bp_hint = "Henüz kayıt yok"
 
-    last_water = next((l for l in reversed(logs) if l.water_liters is not None), None)
-    water_liters = float(last_water.water_liters) if last_water else 1.8
-    water_goal = 2.5
+    last_glucose = next((l for l in reversed(logs) if l.blood_glucose is not None), None)
+    if last_glucose:
+        glucose_value = f"{float(last_glucose.blood_glucose):g} mg/dL"
+        glucose_hint = (
+            f"Son ölçüm · {last_glucose.date.strftime('%d.%m.%Y')}"
+            if last_glucose.date
+            else "Son ölçüm"
+        )
+    else:
+        glucose_value = "—"
+        glucose_hint = "Henüz kayıt yok"
 
     weight_points = []
     for l in logs:
@@ -170,7 +171,6 @@ def build_dashboard(user_id: int, db: Session) -> dict:
             gain_kg = round(float(last_w) - float(user.starting_weight), 1)
 
     preview_name = user.name.strip().split()[0] if user.name else "Anne"
-    fruit = _comparison_for_week(week)
 
     upcoming = _dashboard_upcoming_events(user_id, db)
 
@@ -182,26 +182,23 @@ def build_dashboard(user_id: int, db: Session) -> dict:
             "total_weeks": total_weeks,
             "days_left": days_left,
             "progress_percent": round(progress),
-            "summary_text": (
-                f"Şu an {week}. haftadasın. Bebeğin bir {fruit} büyüklüğünde "
-                f"ve seni duyabiliyor 💛"
-            ),
+            "summary_text": _hero_summary_text(week, baby_size),
         },
         "summary_cards": {
             "baby": {
                 "label": "Bebek Durumu",
-                "value": _fmt_kg(baby_weight_gr),
-                "hint": f"Boy: {baby_cm:.0f} cm",
+                "value": baby_value,
+                "hint": baby_hint,
             },
             "blood_pressure": {
                 "label": "Son Tansiyon",
                 "value": bp_value,
                 "hint": bp_hint,
             },
-            "water": {
-                "label": "Bugünkü Su",
-                "value": f"{water_liters} L",
-                "hint": f"Hedef: {water_goal} L",
+            "blood_glucose": {
+                "label": "Son Kan Şekeri",
+                "value": glucose_value,
+                "hint": glucose_hint,
             },
         },
         "weight_chart": weight_points,

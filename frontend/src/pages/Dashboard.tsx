@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   HeartPulse,
-  Apple,
+  Activity,
   CalendarDays,
   Pill,
   Baby,
@@ -117,10 +117,10 @@ export default function Dashboard() {
           accent="bg-accent/20"
         />
         <SummaryCard
-          icon={<Apple className="h-5 w-5" />}
-          label={summary_cards.water.label}
-          value={summary_cards.water.value}
-          hint={summary_cards.water.hint}
+          icon={<Activity className="h-5 w-5" />}
+          label={summary_cards.blood_glucose.label}
+          value={summary_cards.blood_glucose.value}
+          hint={summary_cards.blood_glucose.hint}
           accent="bg-accent-pink/20"
         />
       </div>
@@ -221,13 +221,17 @@ export default function Dashboard() {
             <Sparkles className="h-5 w-5" />
           </div>
           <div className="flex-1">
-            <h3 className="font-serif text-lg">Bebeğinle bir sohbet başlat</h3>
+            <h3 className="font-serif text-lg">Gebelik Asistanı ile sohbet et</h3>
             <p className="text-sm text-muted-foreground">
-              Bugün nasıl hissettiğini yaz, bebeğin sana cevap versin.
+              Gebelik sürecin, bebeğinin gelişimi veya sağlık kayıtların hakkında soru sor.
             </p>
           </div>
-          <Button className="bg-secondary text-secondary-foreground hover:brightness-105">
-            Bebeğimle Konuş
+          <Button
+            className="bg-secondary text-secondary-foreground hover:brightness-105"
+            type="button"
+            onClick={() => navigate("/bebegimle-konus")}
+          >
+            Gebelik Asistanı
           </Button>
         </CardContent>
       </Card>

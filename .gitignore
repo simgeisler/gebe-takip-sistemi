@@ -21,3 +21,19 @@ __pycache__/
 # --- OS ---
 .DS_Store
 Thumbs.db
+
+# --- Python cache ---
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# --- Environment Variables / Secrets ---
+.env
+.env.*
+ 
+# --- Test / Coverage ---
+coverage/
+htmlcov/
+.coverage
+pytest_cache/
+.pytest_cache/

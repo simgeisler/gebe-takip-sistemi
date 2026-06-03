@@ -24,6 +24,7 @@ from app.models.entities import (
     ForumReply,
     ForumLike,
     ChatMessage,
+    ChatSession,
     CalendarEvent,
     Reminder,
     DailyLog,
