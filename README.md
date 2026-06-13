@@ -5,6 +5,24 @@ Modern, AI destekli gebelik takip ve sağlık yönetim platformu. Anne adayları
 🔗 **Canlı Demo:** [gebe-takip-sistemi.vercel.app](https://gebe-takip-sistemi.vercel.app)
 
 ---
+## 📸 Ekran Görüntüleri
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ac4b62da-c7a1-4961-92f7-5d21abee509d" width="30%" />
+  <img src="https://github.com/user-attachments/assets/90162af3-b33e-41d6-aa91-7e8fa0719341" width="30%" />
+  <img src="https://github.com/user-attachments/assets/63552d1a-8ebd-4908-ae69-b8427d7b3926" width="30%" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/60cd1458-6069-4711-9a9c-c49cd8b9e4c5" width="45%" />
+  <img src="https://github.com/user-attachments/assets/f4167088-c033-40dc-be65-8f0111eb023c" width="45%" />
+</p>
+
+<p align="center">
+  <!-- 2. satır -->
+  <img src="https://github.com/user-attachments/assets/3e17e690-440f-4edb-b782-8b4614b7f3c1" width="45%" />
+  <img src="https://github.com/user-attachments/assets/3a48542c-96c6-4cdb-95ec-f6cd1d42fd12" width="45%" />
+</p>
 
 ## 🌸 Genel Amaç
 
