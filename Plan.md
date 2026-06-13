@@ -4,7 +4,7 @@
 
 - **Kaynaklar:** `PRD.md`, `PROJE_KURULUM_VE_TEKNOLOJILER.md`
 - **Stack:** Vite + React (TypeScript) · FastAPI · PostgreSQL (Supabase)
-- **Auth:** JWT (`python-jose` + `passlib`/bcrypt) — Firebase kullanılmaz
+- **Auth:** JWT (`python-jose` + `passlib`/bcrypt) 
 - **Kritik akış:** Kayıt (2 adım) → Dashboard → Sağlık / Takvim / Kütüphane / Forum / Gebelik Asistanı
 
 ---
