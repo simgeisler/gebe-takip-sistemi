@@ -22,6 +22,8 @@ class ForumQuestionResponse(BaseModel):
     time: str
     replies: int
     votes: int
+    likes_count: int = 0
+    user_liked: bool = False
     detail: str
     created_at: Optional[str] = None
 
@@ -62,3 +64,4 @@ class ForumQuestionList(BaseModel):
     created_at: Optional[str] = None
     replies_count: int
     likes_count: int
+    user_liked: bool = False

@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from sqlalchemy import Column, Integer, String, Date, Float, DateTime, Text, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Date, Float, DateTime, Text, ForeignKey, Boolean, UniqueConstraint
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
@@ -84,10 +84,24 @@ class ForumReply(Base):
 
 class ForumLike(Base):
     __tablename__ = "forum_likes"
+    __table_args__ = (UniqueConstraint("question_id", "user_id", name="uq_forum_likes_question_user"),)
 
     id = Column(Integer, primary_key=True, index=True)
     question_id = Column(Integer, ForeignKey("forum_threads.id"), nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    actor_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    type = Column(String, nullable=False)
+    question_id = Column(Integer, ForeignKey("forum_threads.id"), nullable=False)
+    question_title = Column(String, nullable=False)
+    is_read = Column(Boolean, nullable=False, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 

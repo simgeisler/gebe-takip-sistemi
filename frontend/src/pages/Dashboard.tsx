@@ -80,9 +80,9 @@ export default function Dashboard() {
   return (
     <div className="p-4 md:p-8 space-y-6 max-w-[1400px] mx-auto">
       {/* Hero greeting */}
-      <div className="rounded-2xl bg-gradient-soft p-6 md:p-8 shadow-card relative overflow-hidden">
+      <div className="rounded-2xl bg-gradient-soft px-6 pt-6 pb-6 md:px-8 md:pt-8 md:pb-0 shadow-card relative overflow-hidden">
         <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-secondary/30 blur-2xl" />
-        <div className="relative">
+        <div className="relative md:pr-52 lg:pr-64 md:pb-8">
           <p className="text-sm text-muted-foreground">{subtitle}</p>
           <h1 className="font-serif text-3xl md:text-4xl mt-1">
             {headline}
@@ -98,6 +98,11 @@ export default function Dashboard() {
             <Progress value={progress_percent} className="h-2" />
           </div>
         </div>
+        <img
+          src="/pregnant-mother.png"
+          alt="Hamile anne illüstrasyonu"
+          className="hidden md:block absolute bottom-0 right-0 h-40 lg:h-48 xl:h-56 w-auto object-contain object-bottom pointer-events-none select-none"
+        />
       </div>
 
       {/* 3-column summary */}
@@ -148,7 +153,7 @@ export default function Dashboard() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="w" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                  <XAxis dataKey="d" stroke="hsl(var(--muted-foreground))" fontSize={12} />
                   <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
                   <Tooltip
                     contentStyle={{

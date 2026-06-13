@@ -1,7 +1,8 @@
-# Bebeğim — Gebelik Takip
----
+# 🚀 Bebeğim — Gebelik Takip
 
-## 1. Bu proje ne yapıyor?
+Full-stack gebelik takip uygulaması: sağlık takibi, takvim, forum, makaleler ve **AI destekli Gebelik Asistanı**.
+
+## Bu proje ne yapıyor?
 
 **Bebeğim — Gebelik Takip**, hamilelik sürecinde kullanıcıya yardımcı olmayı hedefleyen bir web uygulamasıdır:
 
@@ -13,6 +14,7 @@
 - “Gebelik Asistan” sohbet ekranı (OpenRouter üzerinden AI destekli)
 - PDF rapor gibi API uçları
 
+<<<<<<< HEAD
 **Veri** sunucuda tutulur: tarayıcıdaki arayüz (frontend), HTTP ile FastAPI sunucusuna (backend) bağlanır; backend **PostgreSQL**e yazar/okur. Bu projede veritabanı pratikte **[Supabase](https://supabase.com)** üzerinde barındırılan PostgreSQL ile kullanılır (`DATABASE_URL`). Yerel bir Postgres sunucusu da aynı şekilde kullanılabilir.
 
  ## Ekran Görüntüleri
@@ -42,33 +44,36 @@
 
 <img width="1919" height="1032" alt="Image" src="https://github.com/user-attachments/assets/ad05c5f1-9bef-45b4-a3a0-43d11290a20a" />
 
+=======
+>>>>>>> 0119623 (projede güncellemeler)
 
 ---
 
-## 2. Kurulumdan önce bilgisayarınızda olması gerekenler
+## 🧠 Tech Stack
 
-| Yazılım | Not |
-|--------|-----|
-| **Node.js** | LTS sürümü yeterli; `npm` ile paket kurulumu |
-| **Python 3.12** | Projede `backend/.python-version` ile 3.12 işaretli |
-| **PostgreSQL erişimi** | **[Supabase](https://supabase.com)** projesi (önerilen) veya kendi kurduğunuz Postgres; bağlantı dizesi `backend/.env` içindeki `DATABASE_URL` |
-| **Git** (isteğe bağlı) | Repoyu klonlamak için |
-
-Windows’ta PowerShell veya CMD kullanabilirsiniz. macOS / Linux’ta komutlar benzer; sanal ortam aktivasyonu `source .venv/bin/activate` şeklindedir.
+- **Frontend:** React + Vite + TypeScript + Tailwind
+- **Backend:** FastAPI
+- **Database:** PostgreSQL (Supabase)
+- **ORM:** SQLAlchemy + Alembic
+- **AI:** OpenRouter (LLM API)
 
 ---
 
-## 3. Veritabanı hazırlığı (Supabase veya yerel Postgres)
+## ✨ Özellikler
 
-### Supabase ile (bu projedeki kullanım)
+- 👤 Kullanıcı giriş / kayıt (JWT)
+- 📊 Sağlık takibi & grafikler
+- 📅 Takvim & etkinlikler
+- 📚 Makale kütüphanesi
+- 💬 Forum sistemi
+- 🤖 AI Gebelik Asistanı
+- 📄 PDF sağlık raporu
 
-Uygulama **Supabase Auth veya Supabase JavaScript istemcisini** doğrudan kullanmaz; Supabase’i **yönetilen PostgreSQL** olarak kullanırsınız. Bağlantı standart `postgresql://...` URI’si ile **SQLAlchemy + psycopg2** üzerinden yapılır (`backend/app/core/database.py`). Kodda da bu yaklaşım not düşülür (`backend/app/services/store.py`).
+---
 
-1. [Supabase](https://supabase.com) üzerinde proje oluşturun.
-2. **Project Settings → Database** bölümünden bağlantı bilgisini alın:
-   - **Connection string** (URI), genelde **Session mode** havuzlayıcı (pooler) veya **Direct connection** adresi olarak verilir.
-3. `backend` klasöründe `.env` oluşturun veya güncelleyin:
+## 🏗️ Mimari
 
+<<<<<<< HEAD
 ```env
 DATABASE_URL=postgresql://postgres.[PROJECT_REF]:[YOUR_PASSWORD]@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
 OPENROUTER_API_KEY=sk-or-v1-...
@@ -85,94 +90,93 @@ Kendi makinenizde Postgres kullanacaksanız veritabanı oluşturup benzer şekil
 
 ```env
 DATABASE_URL=postgresql://KULLANICI_ADI:SIFRE@localhost:5432/VERITABANI_ADI
+=======
+```
+Frontend (React)
+↓
+FastAPI (Backend)
+↓
+SQLAlchemy (ORM)
+↓
+PostgreSQL (Supabase)
+>>>>>>> 0119623 (projede güncellemeler)
 ```
 
 ---
 
-## 4. Backend’i çalıştırma
+## 🚀 Hızlı Başlangıç
 
-```powershell
+### Backend
+
+```bash
 cd backend
 python -m venv .venv
 .\.venv\Scripts\activate
 pip install -r requirements.txt
 alembic upgrade head
-python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+uvicorn main:app --reload --port 8000
 ```
 
-- API dokümantasyonu: **http://127.0.0.1:8000/docs**
-- Sağlık kontrolü: **http://127.0.0.1:8000/healthz**
-- Tüm iş API’leri kök önek ile: **`/api/v1/...`**
+### Frontend
 
-`DATABASE_URL` yanlış veya eksikse uygulama veritabanı oturumu açamaz; önce `.env` ve migrasyonları doğrulayın.
-
----
-
-## 5. Frontend’i çalıştırma
-
-```powershell
+```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Varsayılan geliştirme adresi bu projede **http://localhost:8080** (ayar `frontend/vite.config.ts` içinde `port: 8080`).
+---
 
-Backend farklı bir makinede veya porttaysa, `frontend` içinde `.env` veya `.env.local` oluşturup şunu ekleyin:
+## ⚙️ Ortam Değişkenleri
+
+### `backend/.env`
 
 ```env
-VITE_API_URL=http://127.0.0.1:8000/api/v1
+DATABASE_URL=postgresql://...
+OPENROUTER_API_KEY=sk-or-v1-...
+OPENROUTER_MODEL=openai/gpt-oss-120b:free
+OPENROUTER_HTTP_REFERER=http://localhost:8080
+OPENROUTER_APP_TITLE=Gebelik Asistani
 ```
 
-Kodda varsayılan taban adres `frontend/src/lib/api.ts` içinde tanımlıdır; ortam değişkeni bunun üzerine yazar.
+### `frontend/.env`
 
-**Özet:** Önce backend (8000), sonra frontend (8080) açık olsun; tarayıcıdan 8080’e gidin, giriş/kayıt ve korumalı sayfalar API’ye istek atar.
+```env
+VITE_API_URL=http://localhost:8000/api/v1
+```
 
 ---
 
-## 6. Frontend: ne rol oynuyor, nerede ne var?
+## 📁 Proje Yapısı
 
-Frontend **sadece kullanıcı arayüzü ve istemci tarafı mantığıdır**; kalıcı veri burada tutulmaz (oturum için tarayıcıda `localStorage` ile erişim jetonu saklanabilir).
-
-| Bölüm | Rol |
-|--------|-----|
-| `frontend/src/pages/` | Tam sayfa ekranlar: giriş, kayıt, dashboard, sağlık, takvim, kütüphane, forum, sohbet vb. |
-| `frontend/src/components/` | Yeniden kullanılan arayüz parçaları; `components/ui/` altında Radix tabanlı bileşenler (buton, kart, diyalog …) |
-| `frontend/src/lib/api.ts` | Backend’e giden `fetch` çağrılarının merkezi istemcisi; yol ve JWT başlığı burada toplanır |
-| `frontend/src/App.tsx` | Rotalar (`react-router-dom`): `/dashboard`, `/saglik`, `/takvim`, `/kutuphane`, `/forum`, `/bebegimle-konus` vb. |
-| `frontend/index.html` + `src/main.tsx` | Uygulamanın giriş noktası |
-
-Kullanıcı bir form doldurduğunda veya liste yüklediğinde, React sayfaları `api.ts` üzerinden FastAPI’ye JSON isteği gönderir; gelen cevaba göre ekran güncellenir.
+| Klasör | Açıklama |
+|---|---|
+| `frontend/` | React arayüz |
+| `backend/` | FastAPI backend |
+| `prodocs/` | AI & sistem dokümantasyonu |
+| `DesignSystem.md` | UI tasarım sistemi |
 
 
 ---
 
-## 7. Frontend’de kullanılan başlıca araçlar ve kütüphaneler
+## 🔌 API Genel Yapı
 
-| Araç / kütüphane | Ne için kullanılıyor? |
-|------------------|------------------------|
-| **React 18** | Bileşen tabanlı arayüz |
-| **TypeScript** | Tip güvenliği |
-| **Vite** | Geliştirme sunucusu ve üretim derlemesi (hızlı HMR) |
-| **@vitejs/plugin-react-swc** | React derlemesi için SWC |
-| **React Router v6** | Sayfa yolları ve yönlendirme |
-| **TanStack React Query v5** | Sunucu verisi için önbellekleme, yeniden istek, yükleme durumları (`App.tsx` içinde `QueryClientProvider`) |
-| **Tailwind CSS** | Yardımcı sınıflarla stil |
-| **Radix UI** (`@radix-ui/react-*`) | Erişilebilir, stilsiz primitive bileşenler (diyalog, menü, sekme …) |
-| **react-hook-form** + **zod** + **@hookform/resolvers** | Formlar ve şema ile doğrulama |
-| **Recharts** | Grafikler (ör. sağlık / dashboard) |
-| **date-fns** | Tarih işlemleri |
-| **lucide-react** | İkonlar |
-| **sonner** / shadcn tarzı **toast** | Bildirimler |
-| **Vitest** + **Testing Library** | Birim / bileşen testleri (`npm run test`) |
-| **ESLint** | Kod kalitesi (`npm run lint`) |
+Tüm endpointler: `/api/v1`
 
-Özet: **Vite + React + TypeScript** iskeleti; **Tailwind + Radix** ile modern UI; **React Query** ile API verisi; formlarda **react-hook-form + zod**.
+| Modül | İşlev |
+|---|---|
+| Auth | login / register |
+| Dashboard | kullanıcı özeti |
+| Health | ölçümler & grafikler |
+| Calendar | etkinlikler |
+| Forum | soru/cevap sistemi |
+| Chat | AI Gebelik Asistanı |
 
 ---
 
-## 8. Backend’de kullanılan başlıca araçlar
+## 🤖 AI Sistemi (Gebelik Asistanı)
 
+<<<<<<< HEAD
 | Araç / kütüphane | Ne için kullanılıyor? |
 |------------------|------------------------|
 | **FastAPI** | HTTP API, otomatik OpenAPI (`/docs`) |
@@ -188,31 +192,44 @@ Kullanıcı bir form doldurduğunda veya liste yüklediğinde, React sayfaları 
 | **pytest** + **httpx** | API testleri |
 | **OpenRouter** | LLM sağlayıcısı; varsayılan model **OpenAI: gpt-oss-120b (free)** → `openai/gpt-oss-120b:free` |
 | **Supabase** (altyapı) | Barındırılan **PostgreSQL**; ekstra bir `supabase` Python paketi yok, yalnızca Postgres URI’si (`DATABASE_URL`) |
+=======
+- OpenRouter API kullanılır
+- Model: `openai/gpt-oss-120b:free`
+- Chat backend üzerinden çalışır
+- Sohbet geçmişi PostgreSQL'e kaydedilir
+>>>>>>> 0119623 (projede güncellemeler)
 
-Uygulama girişi: kök `backend/main.py` → `app.main` içindeki FastAPI örneği; yönlendirmeler `backend/app/routers/` altında modüllere ayrılmıştır.
+### Akış
+
+```
+Frontend → FastAPI → OpenRouter → Response → DB
+```
 
 ---
 - **Tek kalıcı veri deposu:** **PostgreSQL**. Projede bu genelde **Supabase** projesindeki Postgres örneğidir; bağlantı `DATABASE_URL` ile verilir.
 - **ORM:** SQLAlchemy (`backend/app/models/`, `backend/app/core/database.py`).
 - **Şema değişiklikleri:** Alembic migrasyonları (`alembic upgrade head`).
 
+<<<<<<< HEAD
 **Frontend ↔ Supabase:** Arayüz doğrudan Supabase’e bağlanmaz; `@supabase/supabase-js` kullanılmaz. Tarayıcı yalnızca **kendi FastAPI backend’inize** istek atar; veritabanı erişimi yalnızca backend sürecinde olur. Bu sayede RLS veya Supabase Dashboard ile yine aynı Postgres üzerinde yönetim yapabilirsiniz; uygulama kodu tarafında “bulut veritabanı = Supabase Postgres URI” modelidir.
 
 **Ayrı bir “frontend içi veritabanı” yoktur**; geliştirmede veri her zaman **backend → PostgreSQL (Supabase veya yerel)** hattındadır.
 
 ---
 ## 9. Veritabanı katmanı ve Supabase’in yeri
+=======
+## 🗄️ Veritabanı
+>>>>>>> 0119623 (projede güncellemeler)
 
-- **Tek kalıcı veri deposu:** **PostgreSQL**. Projede bu genelde **Supabase** projesindeki Postgres örneğidir; bağlantı `DATABASE_URL` ile verilir.
-- **ORM:** SQLAlchemy (`backend/app/models/`, `backend/app/core/database.py`).
-- **Şema değişiklikleri:** Alembic migrasyonları (`alembic upgrade head`).
+- **PostgreSQL** (Supabase)
+- **ORM:** SQLAlchemy
+- **Migration:** Alembic
 
-**Frontend ↔ Supabase:** Arayüz doğrudan Supabase’e bağlanmaz; `@supabase/supabase-js` kullanılmaz. Tarayıcı yalnızca **kendi FastAPI backend’inize** istek atar; veritabanı erişimi yalnızca backend sürecinde olur. Bu sayede RLS veya Supabase Dashboard ile yine aynı Postgres üzerinde yönetim yapabilirsiniz; uygulama kodu tarafında “bulut veritabanı = Supabase Postgres URI” modelidir.
-
-**Ayrı bir “frontend içi veritabanı” yoktur**; geliştirmede veri her zaman **backend → PostgreSQL (Supabase veya yerel)** hattındadır.
+> 📌 **Not:** Frontend doğrudan veritabanına bağlanmaz.
 
 ---
 
+<<<<<<< HEAD
 ## 10. OpenRouter ile AI entegrasyonu (Gebelik Asistanı)
 
 **Bebeğimle konuş** ekranındaki yanıtlar, tarayıcıdan doğrudan bir modele gitmez. Frontend `POST /api/v1/chat/assistant` çağırır; backend bağlamı hazırlayıp **[OpenRouter](https://openrouter.ai/)** üzerinden LLM’e iletir ve yanıtı PostgreSQL’deki sohbet tablolarına kaydeder.
@@ -292,3 +309,26 @@ Detaylı mimari ve güvenlik kuralları `prodocs/` altında: `openrouter-entegra
 
 
 
+=======
+## 🌐 URL'ler (Dev)
+
+| Servis | URL |
+|---|---|
+| Frontend | http://localhost:8080 |
+| Backend | http://localhost:8000 |
+| API Docs | http://localhost:8000/docs |
+
+---
+
+## 📌 Özet
+
+Bu proje:
+
+- ⚡ Modern full-stack mimari (React + FastAPI)
+- 🔐 JWT tabanlı güvenlik
+- 📊 Sağlık + veri takibi sistemi
+- 🤖 AI destekli danışma sistemi
+- ☁️ Supabase ile cloud PostgreSQL
+
+üzerine kurulmuştur.
+>>>>>>> 0119623 (projede güncellemeler)

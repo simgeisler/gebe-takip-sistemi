@@ -20,10 +20,23 @@ from ..services import forum_service as forum_api
 router = APIRouter(prefix="/forum", tags=["forum"])
 
 
+def _optional_user_id(authorization: Optional[str], db: Session) -> int:
+    if not authorization or not authorization.startswith("Bearer "):
+        return 0
+    try:
+        return auth_service.resolve_token(authorization, db=db)
+    except HTTPException:
+        return 0
+
+
 @router.get("", response_model=List[ForumQuestionList])
-def list_forum_posts(category: Optional[str] = Query(None), db: Session = Depends(get_db)):
+def list_forum_posts(
+    category: Optional[str] = Query(None),
+    authorization: Optional[str] = Header(None),
+    db: Session = Depends(get_db),
+):
     """Forum gönderilerini listele - kategori filtreleme ile"""
-    user_id = 0
+    user_id = _optional_user_id(authorization, db)
     return forum_api.list_questions(user_id, db, category)
 
 
@@ -42,16 +55,24 @@ def create_forum_question(payload: ForumQuestionCreate, authorization: Optional[
 
 
 @router.get("/questions", response_model=List[ForumQuestionList])
-def list_forum_questions(category: Optional[str] = Query(None), db: Session = Depends(get_db)):
+def list_forum_questions(
+    category: Optional[str] = Query(None),
+    authorization: Optional[str] = Header(None),
+    db: Session = Depends(get_db),
+):
     """Forum sorularını listele - kategori filtreleme ile"""
-    user_id = 0
+    user_id = _optional_user_id(authorization, db)
     return forum_api.list_questions(user_id, db, category)
 
 
 @router.get("/questions/{question_id}", response_model=ForumQuestionResponse)
-def get_forum_question(question_id: int, db: Session = Depends(get_db)):
+def get_forum_question(
+    question_id: int,
+    authorization: Optional[str] = Header(None),
+    db: Session = Depends(get_db),
+):
     """Forum sorusu detayını getir"""
-    user_id = 0
+    user_id = _optional_user_id(authorization, db)
     return forum_api.get_question(user_id, question_id, db)
 
 

@@ -10,6 +10,7 @@ from .routers.forum_router import router as forum_router
 from .routers.library_extended import router as library_extended_router
 from .routers.health_extended import router as health_extended_router
 from .routers.measurements_router import router as measurements_router
+from .routers.notification_router import router as notification_router
 from .routers.report_router import router as report_router
 from .routers.upcoming_router import router as upcoming_router
 from .routers.wellbeing_router import router as wellbeing_router
@@ -62,6 +63,7 @@ for router in (
     forum_extended_router,
     library_extended_router,
     health_extended_router,
+    notification_router,
     report_router,
     upcoming_router,
     wellbeing_router,

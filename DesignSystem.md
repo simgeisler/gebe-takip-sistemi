@@ -12,7 +12,7 @@ Tasarımda görsel uyumu ve kullanıcı deneyimini (UX) ön planda tutan belirle
 | :--- | :--- | :--- |
 | **Background** | `#F4F7F9` | Göz yormayan açık mavi/gri ton. Tüm sayfa arka planlarında kullanılır. |
 | **Primary** | `#6797B2` | Dengeli ve profesyonel mavi. Ana butonlar, Sidebar ve navigasyon. |
-| **Secondary** | `#FFA0A5` | Sıcak, dikkat çekici pastel pembe. **AI (Bebeğimle Konuş)** butonu. |
+| **Secondary** | `#FFA0A5` | Sıcak, dikkat çekici pastel pembe. **Danışma AI (Gebelik Asistanı)** butonu. |
 | **Accent** | `#6CA9CC` / `#E886BC` | Detaylar, grafik barları ve takvim etkinlikleri. |
 | **Text** | `#B25E63` | Koyu tonlarda, derinlik katan premium metin rengi. |
 
@@ -38,7 +38,7 @@ Uygulamanın kalbi. Kullanıcı login sonrası tüm verilere buradan erişir.
 | :--- | :--- | :--- |
 | **Sidebar** | Tüm modüller arası geçiş sağlayan ana menü. | Arka plan `#6797B2` (Primary). |
 | **Dashboard** | Geri sayım, hafta bilgisi, bebek durumu özeti. | Kartlar beyaz, başlık ve metinler `#B25E63`. |
-| **Bebeğimle Konuş** | AI Companion (Yapay Zeka) etkileşimi. | Buton: `#FFA0A5`. Sidebar'ın en altında sabit. |
+| **Gebelik Asistanı** | Danışma AI — AI destekli danışma sohbeti. | Buton: `#FFA0A5`. Sidebar'ın en altında sabit. |
 
 ---
 
@@ -60,9 +60,9 @@ Uygulamanın kalbi. Kullanıcı login sonrası tüm verilere buradan erişir.
 * **Genel Aksiyonlar:** Tüm ana aksiyon butonları (PDF Oluştur, Giriş Yap, Kaydet) `#6797B2` rengindedir. 
 * **Hover Etkisi:** Fare ile üzerine gelindiğinde buton rengi bir ton koyulaşarak etkileşim hissi verir.
 
-### 🤖 AI Etkileşimi (Bebeğimle Konuş)
-* **Konumlandırma:** Sidebar'ın en altında kullanıcıyla sürekli temas halinde olması için sabitlenmiştir.
-* **Görsel Stil:** `#FFA0A5` rengiyle "bebek/duygusal bağ" temasını vurgular. Etrafında hafif bir gölge (shadow) bulunarak derinlik kazandırılır.
+### 🤖 Danışma AI (Gebelik Asistanı)
+* **Konumlandırma:** Sidebar'ın en altında sabitlenmiş AI destekli danışma girişi.
+* **Görsel Stil:** `#FFA0A5` rengiyle duygusal bağ temasını vurgular. Etrafında hafif gölge (shadow) bulunur.
 
 ### ✍️ Tipografi ve Metinler
 * **Renk:** Tüm başlıklar ve gövde metinleri `#B25E63` rengiyle yazılır.

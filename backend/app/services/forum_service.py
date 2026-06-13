@@ -3,9 +3,11 @@ from typing import Optional, List
 
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
+from ..core.time_format import format_relative_time_tr
 from ..models.entities import User, ForumThread, ForumReply, ForumLike
 from ..schemas.forum import ForumThreadCreate, ForumThreadUpdate
 from ..schemas.forum_extended import ForumQuestionCreate, ForumQuestionUpdate, ForumReplyCreate, ForumLikeCreate
+from ..services import notification_service
 
 
 def _get_thread(thread_id: int, db: Session) -> ForumThread:
@@ -20,7 +22,15 @@ def _thread_author_label(t: ForumThread) -> str:
 
 
 def _thread_time_label(t: ForumThread) -> str:
+    if t.created_at:
+        return format_relative_time_tr(t.created_at)
     return (t.time_label or "").strip() or ""
+
+
+def _reply_time_label(r: ForumReply) -> str:
+    if r.created_at:
+        return format_relative_time_tr(r.created_at)
+    return (r.time or "").strip() or ""
 
 
 def _thread_detail_text(t: ForumThread) -> str:
@@ -34,7 +44,7 @@ def thread_to_card(t: ForumThread) -> dict:
         "cat": t.category,
         "title": t.title,
         "author": t.author_display or "Kullanıcı",
-        "time": t.time_label or "",
+        "time": _thread_time_label(t),
         "replies": t.replies or 0,
         "votes": t.votes or 0,
     }
@@ -158,8 +168,17 @@ def list_questions(user_id: int, db: Session, category: Optional[str] = None) ->
         query = query.filter(ForumThread.category == category)
     
     questions = query.all()
-    
-    # Yanıt ve beğeni sayılarını ekle
+    question_ids = [q.id for q in questions]
+
+    user_liked_ids: set[int] = set()
+    if user_id > 0 and question_ids:
+        liked_rows = (
+            db.query(ForumLike.question_id)
+            .filter(ForumLike.user_id == user_id, ForumLike.question_id.in_(question_ids))
+            .all()
+        )
+        user_liked_ids = {row[0] for row in liked_rows}
+
     result = []
     for question in questions:
         replies_count = db.query(ForumReply).filter(ForumReply.question_id == question.id).count()
@@ -173,18 +192,28 @@ def list_questions(user_id: int, db: Session, category: Optional[str] = None) ->
             "author": _thread_author_label(question),
             "time": _thread_time_label(question),
             "replies": question.replies,
-            "votes": question.votes,
+            "votes": likes_count,
             "replies_count": replies_count,
             "likes_count": likes_count,
+            "user_liked": question.id in user_liked_ids,
             "created_at": question.created_at.isoformat() if question.created_at else None,
         })
-    
+
     return result
 
 
 def get_question(user_id: int, question_id: int, db: Session) -> dict:
     """Forum sorusu detayını getir"""
     question = _get_thread(question_id, db)
+    likes_count = db.query(ForumLike).filter(ForumLike.question_id == question_id).count()
+    user_liked = False
+    if user_id > 0:
+        user_liked = (
+            db.query(ForumLike)
+            .filter(ForumLike.question_id == question_id, ForumLike.user_id == user_id)
+            .first()
+            is not None
+        )
     return {
         "id": question.id,
         "user_id": question.user_id,
@@ -194,7 +223,9 @@ def get_question(user_id: int, question_id: int, db: Session) -> dict:
         "author": _thread_author_label(question),
         "time": _thread_time_label(question),
         "replies": question.replies,
-        "votes": question.votes,
+        "votes": likes_count,
+        "likes_count": likes_count,
+        "user_liked": user_liked,
         "created_at": question.created_at.isoformat() if question.created_at else None,
     }
 
@@ -257,6 +288,15 @@ def create_reply(user_id: int, question_id: int, payload: ForumReplyCreate, db: 
     question = _get_thread(question_id, db)
     question.replies = db.query(ForumReply).filter(ForumReply.question_id == question_id).count()
     db.commit()
+
+    notification_service.create_notification(
+        recipient_id=question.user_id,
+        actor_id=user_id,
+        notification_type="comment",
+        question_id=question_id,
+        question_title=question.title,
+        db=db,
+    )
     
     return {
         "id": reply.id,
@@ -264,7 +304,7 @@ def create_reply(user_id: int, question_id: int, payload: ForumReplyCreate, db: 
         "user_id": reply.user_id,
         "author": reply.author,
         "content": reply.content,
-        "time": reply.time,
+        "time": _reply_time_label(reply),
         "created_at": reply.created_at.isoformat() if reply.created_at else None,
     }
 
@@ -278,7 +318,7 @@ def list_replies(user_id: int, question_id: int, db: Session) -> list[dict]:
         "user_id": r.user_id,
         "author": r.author,
         "content": r.content,
-        "time": r.time,
+        "time": _reply_time_label(r),
         "created_at": r.created_at.isoformat() if r.created_at else None,
     } for r in replies]
 
@@ -306,6 +346,15 @@ def create_like(user_id: int, question_id: int, db: Session) -> dict:
     question = _get_thread(question_id, db)
     question.votes = db.query(ForumLike).filter(ForumLike.question_id == question_id).count()
     db.commit()
+
+    notification_service.create_notification(
+        recipient_id=question.user_id,
+        actor_id=user_id,
+        notification_type="like",
+        question_id=question_id,
+        question_title=question.title,
+        db=db,
+    )
     
     return {
         "id": like.id,

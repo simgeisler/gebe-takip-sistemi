@@ -88,6 +88,43 @@ def list_daily_logs(user_id: int, db: Session) -> list[dict]:
     } for log in daily_logs]
 
 
+def _daily_log_dict(log: DailyLog) -> dict:
+    return {
+        "id": log.id,
+        "user_id": log.user_id,
+        "date": log.date.isoformat() if log.date else None,
+        "weight": log.weight,
+        "water_liters": log.water_liters,
+        "systolic": log.systolic,
+        "diastolic": log.diastolic,
+        "blood_glucose": log.blood_glucose,
+        "pulse": log.pulse,
+        "notes": log.notes,
+        "created_at": log.created_at.isoformat() if log.created_at else None,
+    }
+
+
+def list_daily_logs_in_range(
+    user_id: int, db: Session, start_date: date, end_date: date
+) -> list[dict]:
+    if start_date > end_date:
+        raise HTTPException(
+            status_code=400,
+            detail="Başlangıç tarihi bitiş tarihinden sonra olamaz.",
+        )
+    daily_logs = (
+        db.query(DailyLog)
+        .filter(
+            DailyLog.user_id == user_id,
+            DailyLog.date >= start_date,
+            DailyLog.date <= end_date,
+        )
+        .order_by(DailyLog.date.asc(), DailyLog.id.asc())
+        .all()
+    )
+    return [_daily_log_dict(log) for log in daily_logs]
+
+
 def get_daily_log(user_id: int, log_id: int, db: Session) -> dict:
     daily_log = _get_user_daily_log(user_id, log_id, db)
     return {

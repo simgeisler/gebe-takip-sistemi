@@ -5,6 +5,14 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { FileDown } from "lucide-react";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   ResponsiveContainer,
   LineChart,
   Line,
@@ -33,6 +41,10 @@ export default function HealthTracking() {
   const [isLoading, setIsLoading] = useState(true);
   const [healthSummary, setHealthSummary] = useState<any[]>([]);
   const [trendData, setTrendData] = useState<any>({});
+  const [pdfDialogOpen, setPdfDialogOpen] = useState(false);
+  const [pdfStartDate, setPdfStartDate] = useState("");
+  const [pdfEndDate, setPdfEndDate] = useState("");
+  const [pdfDownloading, setPdfDownloading] = useState(false);
 
   // Özet ve trend verilerini yükle
   useEffect(() => {
@@ -145,12 +157,43 @@ export default function HealthTracking() {
     }
   };
 
-  const handlePDF = async () => {
+  const handleOpenPdfDialog = () => {
+    const today = new Date();
+    const monthAgo = new Date(today);
+    monthAgo.setDate(monthAgo.getDate() - 30);
+    setPdfEndDate(today.toISOString().split("T")[0]);
+    setPdfStartDate(monthAgo.toISOString().split("T")[0]);
+    setPdfDialogOpen(true);
+  };
+
+  const handleDownloadPdf = async () => {
+    if (!pdfStartDate || !pdfEndDate) {
+      toast.error("Lütfen başlangıç ve bitiş tarihlerini seçin.");
+      return;
+    }
+    if (pdfStartDate > pdfEndDate) {
+      toast.error("Başlangıç tarihi bitiş tarihinden sonra olamaz.");
+      return;
+    }
+
+    setPdfDownloading(true);
     try {
-      // This would call a PDF generation endpoint
-      toast.success("PDF raporu oluşturuldu");
+      const blob = await apiClient.downloadHealthReportPdf(pdfStartDate, pdfEndDate);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `saglik-raporu_${pdfStartDate}_${pdfEndDate}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success("PDF raporu indirildi");
+      setPdfDialogOpen(false);
     } catch (error) {
-      toast.error("PDF oluşturulamadı");
+      const msg = error instanceof Error ? error.message : "PDF oluşturulamadı";
+      toast.error(msg);
+    } finally {
+      setPdfDownloading(false);
     }
   };
 
@@ -163,11 +206,54 @@ export default function HealthTracking() {
             Ölçümlerini kaydet, gelişimini grafik üzerinden izle.
           </p>
         </div>
-        <Button onClick={handlePDF}>
+        <Button onClick={handleOpenPdfDialog}>
           <FileDown className="h-4 w-4 mr-2" />
           PDF Rapor Oluştur
         </Button>
       </div>
+
+      <Dialog open={pdfDialogOpen} onOpenChange={setPdfDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-serif">PDF Rapor</DialogTitle>
+            <DialogDescription>
+              Lütfen sağlık verilerinizi PDF raporu olarak indirmek istediğiniz tarih aralığını seçin.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="pdf-start">Başlangıç tarihi</Label>
+              <Input
+                id="pdf-start"
+                type="date"
+                value={pdfStartDate}
+                max={pdfEndDate || undefined}
+                onChange={(e) => setPdfStartDate(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="pdf-end">Bitiş tarihi</Label>
+              <Input
+                id="pdf-end"
+                type="date"
+                value={pdfEndDate}
+                min={pdfStartDate || undefined}
+                max={new Date().toISOString().split("T")[0]}
+                onChange={(e) => setPdfEndDate(e.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button type="button" variant="outline" onClick={() => setPdfDialogOpen(false)}>
+              İptal
+            </Button>
+            <Button type="button" onClick={handleDownloadPdf} disabled={pdfDownloading}>
+              <FileDown className="h-4 w-4 mr-2" />
+              {pdfDownloading ? "Hazırlanıyor..." : "PDF raporunu indir"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Özet Bölümü */}
       <Card className="shadow-card border-border/60">

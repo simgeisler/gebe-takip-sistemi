@@ -8,10 +8,12 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, MessageCircle, Heart, Clock, User } from "lucide-react";
 import { apiClient } from "@/lib/api";
 import { toast } from "sonner";
+import { formatRelativeTimeTr, useRelativeNow } from "@/lib/formatRelativeTime";
 
 export default function ForumQuestion() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const now = useRelativeNow();
   const [question, setQuestion] = useState<any>(null);
   const [replies, setReplies] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -35,14 +37,11 @@ export default function ForumQuestion() {
         // Soruyu getir
         const questionData = (await apiClient.getForumQuestion(qid)) as any;
         setQuestion(questionData);
+        setIsLiked(Boolean(questionData.user_liked));
 
         // Yanıtları getir
         const repliesData = (await apiClient.listForumReplies(qid)) as any[];
         setReplies(repliesData);
-
-        // Beğeni durumu (giriş yoksa API boş döner)
-        const likesData = (await apiClient.listForumLikes(qid)) as any[];
-        setIsLiked(likesData.length > 0);
       } catch (error) {
         console.error("Soru yüklenemedi:", error);
         toast.error("Soru yüklenemedi");
@@ -66,12 +65,22 @@ export default function ForumQuestion() {
         await apiClient.likeForumQuestion(question.id);
         toast.success("Beğenildi");
       }
-      setIsLiked(!isLiked);
+
+      const updated = (await apiClient.getForumQuestion(question.id)) as any;
+      setQuestion(updated);
+      setIsLiked(Boolean(updated.user_liked));
     } catch (error) {
       console.error('Beğeni işlemi başarısız:', error);
       toast.error("Beğeni işlemi başarısız");
     }
   };
+
+  const likeCount =
+    typeof question?.likes_count === "number"
+      ? question.likes_count
+      : typeof question?.votes === "number"
+        ? question.votes
+        : 0;
 
   const handleReply = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,7 +159,9 @@ export default function ForumQuestion() {
               </span>
               <span className="flex items-center gap-1">
                 <Clock className="h-4 w-4" />
-                {question.time}
+                {question.created_at
+                  ? formatRelativeTimeTr(question.created_at, now)
+                  : question.time || "—"}
               </span>
               <span className="flex items-center gap-1">
                 <MessageCircle className="h-4 w-4" />
@@ -165,7 +176,7 @@ export default function ForumQuestion() {
               className={isLiked ? "text-red-500 border-red-500" : ""}
             >
               <Heart className={`h-4 w-4 mr-2 ${isLiked ? 'fill-current' : ''}`} />
-              {isLiked ? 'Beğenildi' : 'Beğen'}
+              {likeCount}
             </Button>
           </div>
         </CardContent>
@@ -214,7 +225,11 @@ export default function ForumQuestion() {
                     </div>
                     <div>
                       <p className="font-medium">{reply.author}</p>
-                      <p className="text-xs text-muted-foreground">{reply.time}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {reply.created_at
+                          ? formatRelativeTimeTr(reply.created_at, now)
+                          : reply.time || "—"}
+                      </p>
                     </div>
                   </div>
                 </div>

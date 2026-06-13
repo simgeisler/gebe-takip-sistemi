@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Clock, BookOpen, Heart, Share2 } from "lucide-react";
 import { apiClient } from "@/lib/api";
 import { toast } from "sonner";
+import ReactMarkdown from "react-markdown";
 
 export default function LibraryArticle() {
   const { id } = useParams<{ id: string }>();
@@ -184,8 +185,8 @@ export default function LibraryArticle() {
       {/* Makale İçeriği */}
       <Card className="shadow-card border-border/60">
         <CardContent className="p-6">
-          <div className="prose prose-sm md:prose-base max-w-none whitespace-pre-wrap text-foreground">
-            {article.body || ""}
+          <div className="prose prose-sm md:prose-base max-w-none text-foreground prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground">
+            <ReactMarkdown>{article.body || ""}</ReactMarkdown>
           </div>
         </CardContent>
       </Card>

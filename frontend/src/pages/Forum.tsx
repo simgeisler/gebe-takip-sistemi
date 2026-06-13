@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { MessageCircle, Clock, Plus, Heart } from "lucide-react";
 import { apiClient } from "@/lib/api";
 import { toast } from "sonner";
+import { formatRelativeTimeTr, useRelativeNow } from "@/lib/formatRelativeTime";
 
 const questionCategories = [
   "1. Trimester (0-13 Hafta)",
@@ -32,6 +33,7 @@ const FILTER_OPTIONS: { label: string; api: string | null }[] = [
 
 export default function Forum() {
   const navigate = useNavigate();
+  const now = useRelativeNow();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [activeFilterApi, setActiveFilterApi] = useState<string | null>(null);
   const [threads, setThreads] = useState<any[]>([]);
@@ -111,7 +113,7 @@ export default function Forum() {
     }
   };
 
-  const isQuestionLiked = (question: any) => question.likes_count > 0;
+  const isQuestionLiked = (question: any) => Boolean(question.user_liked);
 
   if (isLoading) {
     return (
@@ -219,7 +221,12 @@ export default function Forum() {
 
       <div className="flex flex-col gap-3">
         {filteredThreads.map((thread) => {
-          const votes = typeof thread.votes === "number" ? thread.votes : 0;
+          const votes =
+            typeof thread.likes_count === "number"
+              ? thread.likes_count
+              : typeof thread.votes === "number"
+                ? thread.votes
+                : 0;
           const replies = thread.replies_count ?? thread.replies ?? 0;
           const liked = isQuestionLiked(thread);
           const initial = (thread.author || "?").trim().charAt(0).toUpperCase();
@@ -274,7 +281,9 @@ export default function Forum() {
                     </span>
                     <span className="inline-flex items-center gap-1">
                       <Clock className="h-3.5 w-3.5 opacity-70" />
-                      {thread.time || "—"}
+                      {thread.created_at
+                        ? formatRelativeTimeTr(thread.created_at, now)
+                        : thread.time || "—"}
                     </span>
                     <span className="inline-flex items-center gap-1">
                       <MessageCircle className="h-3.5 w-3.5 opacity-70" />

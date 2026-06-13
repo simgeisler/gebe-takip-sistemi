@@ -12,6 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Baby, CalendarIcon, ArrowRight, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { apiClient } from "@/lib/api";
+import { setAccessToken, setUserName } from "@/lib/authStorage";
 import { useToast } from "@/hooks/use-toast";
 
 export default function SignUp() {
@@ -134,8 +135,8 @@ export default function SignUp() {
                       sat: format(data.sat, "yyyy-MM-dd"),
                       kilo: kiloNum,
                     }) as { access_token: string; user?: { name: string } };
-                    localStorage.setItem('access_token', response.access_token);
-                    localStorage.setItem('user_name', (response.user?.name ?? data.name).trim());
+                    setAccessToken(response.access_token);
+                    setUserName((response.user?.name ?? data.name).trim());
                     toast({
                       title: "Kayıt başarılı",
                       description: "Hoş geldiniz! Hesabınız oluşturuldu.",

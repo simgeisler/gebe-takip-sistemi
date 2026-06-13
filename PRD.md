@@ -1,199 +1,257 @@
-# PRD: Gebelik Takibi MVP
+# PRD: Bebeğim — Gebelik Takip (Web MVP)
 
-**Ürün Sloganı:** Haftalık Veri, Sağlık Kaydı ve Teknik Süreç Yönetimi  
-**Versiyon:** 1.0 (MVP)  
-**Durum:** Taslak / Geliştirmeye Hazır
+**Ürün sloganı:** Haftalık veri, sağlık kaydı ve süreç yönetimi  
+**Versiyon:** 2.0 (Web MVP — güncel)  
+**Durum:** Aktif geliştirme — çekirdek özellikler canlı  
+**Platform:** Web (Vite + React)
 
----
-
-## 1. Ürün Özeti ve Hedefler
-
-Bu ürünün amacı, **20-36 yaş arası** hamile bireylere, süreci duygusal bir günlükten ziyade veri odaklı, tıbbi bir takip paneli olarak sunmaktır. MVP'nin başarısı; veri giriş hızı, grafiksel doğruluk ve raporlama kalitesiyle ölçülecektir.
+**Teknik referans:** [`PROJE_KURULUM_VE_TEKNOLOJILER.md`](PROJE_KURULUM_VE_TEKNOLOJILER.md)
 
 ---
 
-## 2. Kullanıcı Akışları ve Fonksiyonel Gereksinimler
+## 1. Ürün özeti ve hedefler
 
-### 2.0. Auth & Onboarding Akışı ★ YENİ
+**Bebeğim — Gebelik Takip**, hamile bireylere gebelik sürecini veri odaklı bir panel üzerinden takip etme imkânı sunan bir **web uygulamasıdır**. MVP başarısı; veri giriş hızı, dashboard doğruluğu, sağlık grafikleri, forum etkileşimi ve Danışma AI kalitesiyle ölçülür.
 
-#### Navigation Stack Özeti
+**Hedef kitle:** 20–36 yaş arası, gebelik sürecini dijital olarak izlemek isteyen kullanıcılar.
+
+---
+
+## 2. Teknoloji stack (güncel)
+
+| Katman | Seçim |
+|--------|--------|
+| **Frontend** | React 18, TypeScript, Vite, Tailwind CSS, Radix UI, React Router v6, TanStack React Query |
+| **Backend** | Python 3.12, FastAPI, Pydantic, SQLAlchemy, Alembic |
+| **Veritabanı** | PostgreSQL (Supabase üzerinde barındırılan veya yerel) |
+| **Kimlik doğrulama** | JWT (`python-jose`, `passlib` + bcrypt) — **Firebase kullanılmaz** |
+| **AI** | OpenRouter — varsayılan model `openai/gpt-oss-120b:free` |
+| **PDF** | ReportLab (+ Pillow) — sunucuda stream, kalıcı dosya yok |
+
+**Kapsam dışı:** React Native, Firebase Auth/FCM, Redis önbellek, tekme/kasılma sayaçları, push bildirimleri.
+
+---
+
+## 3. Kullanıcı akışları ve fonksiyonel gereksinimler
+
+### 3.0. Auth ve onboarding ✅
+
+#### Web rotaları
 
 ```
-App Start
-  └── JWT token kontrolü
-        ├── Token geçerliyse       → Main Stack (TabNavigator)
-        └── Token yoksa/geçersizse → Auth Stack
-              ├── AuthGateScreen       (Giriş Yap / Üye Ol seçimi)
-              ├── LoginScreen          (Email + Şifre)
-              └── RegisterScreen
-                    ├── Step 1: HesapBilgileri   (Ad Soyad, Email, Şifre)
-                    └── Step 2: GebelikBilgileri  (SAT, Başlangıç Kilosu)
-                          └── → Direkt Main Stack'e yönlendir (tekrar login isteme)
-
-Main Stack
-  └── TabNavigator
-        ├── Dashboard
-        ├── Takip      (Kilo, Tansiyon)
-        ├── Sayaçlar   (Tekme, Kasılma)
-        ├── Forum
-        └── Kütüphane
+/  →  /giris (token yoksa)
+/giris, /kayit  →  Auth akışı
+Kayıt tamamlanınca  →  /dashboard (tekrar giriş istenmez)
+Token geçerliyse  →  korumalı sayfalar (AppLayout + sidebar)
 ```
 
-#### 2.0.1. Karşılama Ekranı (Auth Gate)
+#### Kayıt — 2 adım
 
-Uygulama ilk açıldığında kullanıcıya tek bir seçim ekranı gösterilir. Bu ekran iki aksiyona sahiptir:
+| Adım | Alanlar |
+|------|---------|
+| 1 — Hesap | Ad soyad, e-posta (benzersiz), şifre (min. 8 karakter) |
+| 2 — Gebelik | Son adet tarihi (SAT), başlangıç kilosu (kg) |
 
-* **Giriş Yap** — Mevcut hesabıyla devam eden kullanıcılar için.
-* **Üye Ol** — Uygulamayı ilk kez kullanan yeni kullanıcılar için.
+Kayıt sonrası JWT üretilir; kullanıcı doğrudan dashboard’a yönlendirilir.
 
-#### 2.0.2. Üye Ol Akışı — 2 Adımlı Onboarding
+#### Oturum
 
-Kayıt süreci iki ayrı ekrana bölünür. Kullanıcı her iki adımı tamamladıktan sonra tekrar login ekranına yönlendirilmeden doğrudan Ana Ekran'a (Main Stack) geçer.
-
-| Adım | Ekran Adı | Toplanan Alanlar |
-|------|-----------|-----------------|
-| Adım 1 | Hesap Bilgileri | Ad Soyad (zorunlu), E-posta adresi (zorunlu, unique), Şifre (min. 8 karakter) |
-| Adım 2 | Gebelik Bilgileri | Son Adet Tarihi (SAT) veya Beklenen Doğum Tarihi, Başlangıç kilosu (kg) |
-
-> **Önemli:** Adım 2 tamamlandıktan sonra kullanıcı tekrar Giriş Yap ekranına yönlendirilmez. JWT token üretilir ve kullanıcı doğrudan Ana Ekran'a (TabNavigator) yönlendirilir.
-
-#### 2.0.3. Giriş Yap Akışı
-
-* Kullanıcı e-posta ve şifresini girer.
-* Backend kimlik doğrulaması yapar; JWT token döner.
-* Token, cihazda güvenli şekilde saklanır (Secure Storage / Keychain).
-* Kullanıcı, daha önce girdiği SAT/profil verisine göre hesaplamalar yapılarak kendi Dashboard ekranına yönlendirilir.
-
-#### 2.0.4. Oturum Sürekliliği (Session Persistence)
-
-Kullanıcı uygulamayı kapatıp tekrar açtığında sistem şu kontrolü yapar:
-
-* **JWT token geçerli →** Auth Stack atlanır, doğrudan Main Stack (TabNavigator) açılır.
-* **JWT token süresi dolmuş veya yok →** Auth Gate ekranına yönlendirilir.
-
-#### 2.0.5. Teknik Gereksinimler (Auth)
-
-* **Authentication:** JWT (JSON Web Token) ile session yönetimi.
-* **Token Saklama:** React Native SecureStore (Expo) veya Keychain (iOS) / Keystore (Android).
-* **API Endpoint'leri:**
-  * `POST /auth/register` — Adım 1 + Adım 2 verilerini alır, kullanıcı oluşturur, JWT döner.
-  * `POST /auth/login` — Email + Şifre doğrular, JWT döner.
-  * `POST /auth/logout` — Token'ı geçersiz kılar.
-  * `GET /auth/me` — Token doğrulama ve kullanıcı bilgisi döner.
-* **Validation:** E-posta benzersizliği kayıt sırasında kontrol edilmeli; aynı e-posta ile kayıt engellenmeli.
-* **Hata Mesajları:** "Bu e-posta zaten kayıtlı", "Hatalı e-posta veya şifre" gibi kullanıcıya açık mesajlar gösterilmeli.
+- Token tarayıcı **`sessionStorage`** içinde saklanır (sekme kapanınca oturum biter).
+- API: `POST /auth/register`, `POST /auth/login`, `POST /auth/logout`, `GET/PATCH/DELETE /auth/me`.
 
 ---
 
-### 2.1. Onboarding & Profil Oluşturma (Kritik Altyapı)
+### 3.1. Ana navigasyon ✅
 
-* **Gereksinim:** Kullanıcıdan "Son Adet Tarihi (SAT)" veya "Beklenen Doğum Tarihi" alınmalıdır.
-* **Mantık:** Sistem, tüm haftalık hesaplamaları SAT üzerinden **+280 gün** formülüyle yapacaktır.
+Sidebar menüsü:
 
-### 2.2. Teknik Durum Paneli (Dashboard)
+| Menü (UI) | Rota |
+|-----------|------|
+| Dashboard | `/dashboard` |
+| Sağlık Takibi | `/saglik` |
+| Takvim | `/takvim` |
+| Kütüphane | `/kutuphane` |
+| Forum | `/forum` |
+| Gebelik Asistanı (Danışma AI) | `/bebegimle-konus`* |
 
-* **Geri Sayım:** Mevcut tarih ile beklenen doğum tarihi arasındaki gün farkı.
-* **Hafta/Gün Hesaplama:** `Hafta = floor((Bugün - SAT) / 7)` — Örn: 24 hafta 3 gün.
-* **Trimester Mantığı:**
-  * 1. Trimester: 1-13. haftalar
-  * 2. Trimester: 14-26. haftalar
-  * 3. Trimester: 27-40+ haftalar
-* **UI Gereksinimi:** Dashboard açıldığında en güncel "Kilo" ve "Tansiyon" verisi küçük widget'lar olarak görünmelidir.
+\* Teknik URL yolu; kullanıcıya **Gebelik Asistanı — AI destekli danışma** olarak sunulur.
 
-### 2.3. Haftalık Biyolojik Rapor ve Kıyaslayıcı
-
-* **Veri Yapısı:** Her hafta (1'den 42'ye kadar) için DB'de tanımlı; Boy (cm), Ağırlık (gr), Organ Gelişimi metni ve Semptom Analizi metni bulunmalıdır.
-* **Boyut Kıyaslama:** Görsel bir obje (meyve/sebze/nesne) ile haftalık eşleşme.
-  * *Örnek:* 8. Hafta = Ahududu, 24. Hafta = Mısır.
-
-### 2.4. Sağlık Veri Girişi (Loglama)
-
-* **Kilo Takibi:** Başlangıç kilosu (profilde tanımlanan) baz alınır. Giriş yapılan her veri, X ekseni "Zaman", Y ekseni "Kilo" olan bir **line-chart** üzerinde gösterilir.
-* **Tansiyon Takibi:**
-  * **Giriş:** Sistolik (Büyük), Diyastolik (Küçük) ve Nabız (Opsiyonel).
-  * **Listeleme:** Ters kronolojik sırada (en yeni üstte). Riskli değerler (>140/90) kırmızı vurguyla işaretlenmelidir.
-
-### 2.5. Operasyonel Sayaçlar (Real-time Tools)
-
-* **Tekme Sayacı:** "Başlat" butonuyla aktif olur. Her dokunuş bir log oluşturur. 1 saatlik oturum sonunda toplam sayı kaydedilir.
-* **Kasılma Kronometresi:** Start/Stop mekanizması. Sistem; iki kasılma arasındaki sıklığı (*frequency*) ve kasılmanın kendi süresini (*duration*) hesaplar.
-* **Algoritma:** Eğer kasılmalar 5 dakikada bir geliyorsa ve 1 dakika sürüyorsa (**5-1-1 kuralı**), ekranda "Hastaneye gitme vaktiniz gelmiş olabilir" uyarısı tetiklenmelidir.
-
-### 2.6. Bilgi Setleri & Kütüphane
-
-* **Kategorizasyon:** Beslenme, Testler, Aktivite, Yasal Haklar.
-* **Arama:** Metin tabanlı arama (*search bar*) MVP'ye dahil edilmelidir.
-
-### 2.7. Tartışma Forumu
-
-* **Yapı:** Reddit benzeri basit bir thread yapısı.
-* **Kategoriler:** Hastane Önerileri, Doktor Yorumları, Ürün Tavsiyeleri.
-* **Moderasyon:** "Şikayet et" (*report*) butonu teknik olarak bulunmalıdır.
+Üst çubukta kullanıcı menüsü ve forum bildirimleri.
 
 ---
 
-## 3. Teknik Gereksinimler
+### 3.2. Dashboard ✅
 
-### 3.1. Veri Modeli ve Veritabanı Mimarisi (Schema)
+- **Geri sayım:** Beklenen doğum tarihine kalan gün.
+- **Hafta/gün:** SAT üzerinden hesaplanan gebelik haftası ve gün.
+- **Trimester:** 1–13 / 14–26 / 27–40+ hafta aralıkları.
+- **Bebek durumu:** `weekly_metadata` tablosundan boy, kilo, meyve/nesne kıyası (`baby_size`).
+- **Hero metni:** Haftalık `baby_size` ile dinamik özet cümle.
+- **Özet kartları:** Son tansiyon, son kan şekeri (tarih ipucu ile), bebek bilgisi.
+- **Kilo grafiği:** X ekseni ölçüm tarihi (`gg/aa`), Y ekseni kilo.
+- **Yaklaşan etkinlikler:** `upcoming` API ile liste.
+- **Danışma AI CTA:** Dashboard’dan Gebelik Asistanı sayfasına yönlendirme.
 
-* **User Profile:** `user_id`, `name`, `email`, `password_hash`, `expected_due_date`, `last_menstrual_period`, `starting_weight`, `created_at`.
-* **Auth Tokens:** `token_id`, `user_id`, `token_hash`, `expires_at`, `device_info`.
-* **Daily Logs Table:** `log_id`, `user_id`, `date`, `weight`, `systolic`, `diastolic`, `water_intake`, `note`.
-* **Weekly Metadata (Static):** `week_number`, `fetus_size_cm`, `fetus_weight_gr`, `development_milestones` (JSON), `comparison_object_name`, `image_url`.
-* **Counter Logs:** `counter_id`, `user_id`, `type` (kick/contraction), `start_time`, `end_time`, `duration_seconds`, `frequency_seconds`.
-
-### 3.2. API ve Backend Mantığı (Business Logic)
-
-* **Auth Endpoints:** `POST /auth/register`, `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`.
-* **Calculation Engine:** `GET /get-current-status` — Hafta, gün ve trimester bilgisini döner.
-* **Health Analytics API:** `GET /health-trends` — Kilo ve tansiyon verilerini grafik kütüphanelerine uygun JSON formatında hazırlar.
-* **Contraction Analyzer:** `POST /analyze-contraction` — Son 1 saatteki kasılma sıklığını analiz eder. Danger zone tespiti yapar.
-
-### 3.3. PDF Üretim Motoru (Reporting Service)
-
-* **Kütüphane:** Puppeteer veya ReportLab (Python) kullanılmalıdır.
-* **İşleyiş:** PDF'ler sunucuda saklanmamalı, doğrudan stream edilmeli veya geçici bir S3 bucket üzerinden sunulmalıdır.
-
-### 3.4. Bildirim Altyapısı (Push Notifications)
-
-* **Servis:** Firebase Cloud Messaging (FCM).
-* **Trigger:** Lokal su hatırlatıcıları ve Server-side cron job (Yeni hafta bildirimleri).
-
-### 3.5. Güvenlik ve Gizlilik (Compliance)
-
-* **Veri Hassasiyeti:** Sağlık verileri GDPR ve KVKK kapsamında "Özel Nitelikli Kişisel Veri" statüsündedir.
-* **Encryption:** Veritabanında veriler *at-rest* (**AES-256**) olarak şifrelenmelidir.
-* **Authentication:** **JWT** (JSON Web Token) ile session yönetimi.
-
-### 3.6. Uç Durumlar (Edge Cases)
-
-* **Gelecek Tarihli Veri Girişi:** İleri tarihli veri girişi engellenmelidir.
-* **Negatif Geri Sayım:** Doğum tarihi geçtiğinde "40+ hafta" gösterilmeli ve "Doğum gerçekleşti mi?" butonu aktif edilmelidir.
-* **Birim Dönüşümleri:** Mimaride cm/gr ve inch/lb esnekliği sağlanmalıdır.
-
-### 3.7. MVP Teknoloji Stack Önerisi
-
-* **Frontend:** React Native veya Flutter.
-* **Backend:** Node.js (Express) veya Python (FastAPI).
-* **Database:** PostgreSQL.
-* **Caching:** Redis.
+**API:** `GET /dashboard`, `GET /get-current-status`, `GET /pregnancy/status`.
 
 ---
 
-## 4. Tasarım Parametreleri (UI/UX)
+### 3.3. Haftalık biyolojik veri ✅ (dashboard entegrasyonu)
 
-* **Tema:** Light Mode. White (`#FFFFFF`) zemin, Medical Blue (`#0057B8`) butonlar, Dark Gray (`#333333`) metinler.
-* **Erişilebilirlik:** Minimum **16px** font boyutu.
-* **Navigasyon:** Dashboard | Takip | Sayaçlar | Forum | Kütüphane.
-
----
-
-## 5. Başarı Metrikleri (KPIs)
-
-* **DAU:** Veri girişi yapan kullanıcı oranı.
-* **Retention:** Sayaç kullanımı sonrası geri dönüş oranı.
-* **Conversion:** Üretilen PDF raporu sayısı.
+- 1–42 hafta referans verisi `weekly_metadata` tablosunda (Alembic seed).
+- Alanlar: `baby_weight`, `baby_length`, `baby_size`, `description`, `common_symptoms`, `tips`.
+- Ayrı “haftalık rapor” sayfası yok; veriler dashboard’da gösterilir.
 
 ---
 
-> **Developer Notu:** Veritabanı mimarisinde "Gebelikteki Gün" bilgisini ana anahtar (*key*) olarak kullanın. Tüm hesaplamalar bu gün sayısına göre tetiklenecektir. Auth akışında kullanıcının ilk kaydında Adım 2'den sonra token üretilmeli ve kullanıcı doğrudan Ana Ekran'a düşmelidir.
+### 3.4. Sağlık veri girişi ✅
+
+**Günlük log (`daily_logs`):** tarih, kilo, tansiyon (sistolik/diyastolik), kan şekeri, nabız, su, not.
+
+- Ters kronolojik liste; riskli tansiyon (>140/90) görsel vurgu.
+- Trend grafikleri: kilo, tansiyon, kan şekeri.
+- Gelecek tarihli kayıt backend’de engellenir.
+
+**API:** `GET/POST/PUT/DELETE /measurements`, `GET /measurements/charts`, `GET /health/measurements/summary`, `GET /health/measurements/trends/{type}`.
+
+---
+
+### 3.5. PDF rapor ✅
+
+- Sağlık Takibi sayfasından tarih aralığı seçimi ile indirme.
+- ReportLab ile tablo formatında PDF; sunucuda kalıcı dosya tutulmaz.
+
+**API:** `GET /reports/pdf?start_date=YYYY-MM-DD&end_date=YYYY-MM-DD`.
+
+---
+
+### 3.6. Takvim ✅
+
+- Randevu / etkinlik CRUD.
+- Türkçe locale (`date-fns/locale/tr`); hafta Pazartesi’den başlar.
+
+**API:** `GET/POST/PUT/DELETE /calendar/events`.
+
+---
+
+### 3.7. Kütüphane ✅
+
+- Kategori bazlı makale listesi ve detay.
+- Makale gövdesi **Markdown** olarak render edilir (`react-markdown`).
+- Beğeni (like) desteği.
+
+**API:** `GET/POST/PUT/DELETE /library/articles`, like uçları.
+
+---
+
+### 3.8. Forum ✅
+
+- Soru listesi, detay, yanıt, beğeni.
+- Zaman etiketi `created_at` üzerinden dinamik: Bugün / Dün / tam tarih.
+- Forum etkileşimlerinde **uygulama içi** bildirimler (yorum, beğeni).
+
+**API:** `GET/POST /forum`, `GET/PUT/DELETE /forum/questions/{id}`, yanıt ve beğeni uçları; `GET /notifications`, `PATCH /notifications/{id}/read`.
+
+---
+
+### 3.9. Danışma AI (Gebelik Asistanı) ✅
+
+AI destekli danışma sohbeti; gebelik süreci, bebek gelişimi ve sağlık kayıtları hakkında bilgilendirici yanıtlar verir.
+
+- OpenRouter üzerinden LLM; tarayıcı doğrudan modele gitmez.
+- Çoklu sohbet oturumu: sol panel geçmiş, sağ panel aktif sohbet.
+- Kişisel sağlık verisi yalnızca mesaj bağlamına göre seçici eklenir.
+- Türkçe, destekleyici ton; teşhis/ilaç önerisi yok; riskli belirtide doktora yönlendirme.
+
+**Arayüz:** `BabyChat.tsx` — başlık “Gebelik Asistanı”, alt metin danışma odaklı. Sidebar’da “AI destekli danışma”.
+
+**API:** `GET/POST/DELETE /chat/sessions`, `GET/POST /chat/sessions/{id}/messages`, `POST /chat/sessions/{id}/assistant`.
+
+Detay: [`prodocs/gebelik-asistani-mimari.md`](prodocs/gebelik-asistani-mimari.md).
+
+---
+
+### 3.10. Bildirimler ✅
+
+| Özellik | Durum |
+|---------|--------|
+| Forum bildirimleri (yorum/beğeni) | ✅ Uygulama içi (`NotificationDropdown`) |
+
+Push bildirimi veya harici bildirim servisi **kullanılmaz**.
+
+---
+
+## 4. Veri modeli (özet)
+
+| Tablo | Amaç |
+|--------|------|
+| `users` | Profil, SAT, EDD, başlangıç kilosu |
+| `tokens` | JWT oturum kayıtları |
+| `daily_logs` | Sağlık ölçümleri |
+| `weekly_metadata` | 1–42 hafta statik bebek/semptom verisi |
+| `calendar_events` | Takvim etkinlikleri |
+| `library_articles`, `library_likes` | Kütüphane |
+| `forum_threads`, `forum_replies`, `forum_likes` | Forum |
+| `notifications` | Forum bildirimleri |
+| `chat_sessions`, `chat_messages` | Danışma AI sohbetleri |
+
+Detay: [`prodocs/veritabani-yapisi.md`](prodocs/veritabani-yapisi.md).
+
+---
+
+## 5. Güvenlik ve gizlilik
+
+- JWT ile kimlik doğrulama; parola bcrypt hash.
+- Sağlık verileri KVKK/GDPR kapsamında hassas kabul edilir.
+- Frontend doğrudan veritabanına bağlanmaz; tüm erişim FastAPI üzerinden.
+- `.env` ve API anahtarları repoya eklenmez.
+
+---
+
+## 6. Tasarım (UI/UX)
+
+Renk ve ekran eşleşmeleri [`DesignSystem.md`](DesignSystem.md) dosyasında tanımlıdır.
+
+| Öğe | Renk |
+|-----|------|
+| Arka plan | `#F4F7F9` |
+| Primary (sidebar, butonlar) | `#6797B2` |
+| Danışma AI butonu | `#FFA0A5` |
+| Metin | `#B25E63` |
+
+Light mode; sidebar + responsive layout.
+
+---
+
+## 7. Uç durumlar
+
+| Durum | Beklenen davranış |
+|--------|-------------------|
+| Gelecek tarihli sağlık kaydı | Engellenir |
+| Doğum tarihi geçti | 40+ hafta gösterimi |
+| `weekly_metadata` kaydı yok | “Bilgi bulunamadı” |
+| OpenRouter anahtarı yok | Sohbet 503 |
+| PDF aralığında kayıt yok | 404 |
+
+---
+
+## 8. Başarı metrikleri (KPI)
+
+- Günlük/haftalık sağlık verisi giriş oranı
+- Dashboard ve Danışma AI oturum süresi
+- Forum etkileşimi (soru, yanıt, beğeni)
+- PDF rapor indirme sayısı
+- Kayıt → dashboard tamamlama oranı
+
+---
+
+## 9. MVP dışı / sonraki sürüm
+
+- Birim dönüşümü (cm/gr ↔ inch/lb)
+- Gelişmiş forum moderasyon paneli
+- Mobil native uygulama (React Native)
+- E2E test ve CI/CD otomasyonu
+
+---
+
+> **Not:** İlk PRD sürümü React Native, Firebase Auth, tekme/kasılma sayaçları ve FCM bildirimleri öngörüyordu. Güncel ürün **Vite + React web uygulaması**dır; kimlik doğrulama JWT, bildirimler yalnızca uygulama içi forum bildirimleridir.

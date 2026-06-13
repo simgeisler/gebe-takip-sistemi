@@ -1,4 +1,17 @@
+import { getAccessToken } from "./authStorage";
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+
+export type NotificationItem = {
+  id: number;
+  type: 'comment' | 'like';
+  actor_name: string;
+  question_id: number;
+  question_title: string;
+  is_read: boolean;
+  time_label: string;
+  created_at?: string | null;
+};
 
 class ApiClient {
   private baseURL: string;
@@ -31,7 +44,7 @@ class ApiClient {
     const { query, ...fetchOptions } = config;
 
     // Add auth token if available
-    const token = localStorage.getItem('access_token');
+    const token = getAccessToken();
     if (token) {
       fetchOptions.headers = {
         ...fetchOptions.headers,
@@ -197,6 +210,40 @@ class ApiClient {
     });
   }
 
+  async downloadHealthReportPdf(startDate: string, endDate: string): Promise<Blob> {
+    const params = new URLSearchParams({
+      start_date: startDate,
+      end_date: endDate,
+    });
+    const url = `${this.baseURL}/reports/pdf?${params.toString()}`;
+
+    const headers: Record<string, string> = {};
+    const token = getAccessToken();
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    let response: Response;
+    try {
+      response = await fetch(url, { headers });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      throw new Error(
+        msg === "Failed to fetch"
+          ? "Sunucuya bağlanılamadı. Backend çalışıyor mu kontrol edin."
+          : msg
+      );
+    }
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: "PDF oluşturulamadı" }));
+      const detail = (error as { detail?: unknown }).detail ?? "PDF oluşturulamadı";
+      throw new Error(typeof detail === "string" ? detail : JSON.stringify(detail));
+    }
+
+    return response.blob();
+  }
+
   // Forum extended endpoints
   async getForumQuestions(category?: string) {
     const query = category ? { category } : {};
@@ -253,6 +300,32 @@ class ApiClient {
   async listForumLikes(questionId: number) {
     return this.request(`/forum/questions/${questionId}/likes`, {
       method: 'GET',
+    });
+  }
+
+  // Notification endpoints
+  async getNotifications() {
+    return this.request<{
+      notifications: NotificationItem[];
+      unread_count: number;
+    }>('/notifications', { method: 'GET' });
+  }
+
+  async getNotificationUnreadCount() {
+    return this.request<{ unread_count: number }>('/notifications/unread-count', {
+      method: 'GET',
+    });
+  }
+
+  async markNotificationRead(notificationId: number) {
+    return this.request<NotificationItem>(`/notifications/${notificationId}/read`, {
+      method: 'PATCH',
+    });
+  }
+
+  async markAllNotificationsRead() {
+    return this.request<{ ok: boolean; unread_count: number }>('/notifications/read-all', {
+      method: 'PATCH',
     });
   }
 

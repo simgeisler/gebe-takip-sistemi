@@ -9,6 +9,7 @@ from .entities import (
     KickSession,
     LibraryArticle,
     LibraryLike,
+    Notification,
     Reminder,
     Token,
     User,

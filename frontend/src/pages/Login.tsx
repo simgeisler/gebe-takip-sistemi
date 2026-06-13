@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Baby } from "lucide-react";
 import { apiClient } from "@/lib/api";
+import { setAccessToken, setUserName } from "@/lib/authStorage";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Login() {
@@ -53,11 +54,11 @@ export default function Login() {
                 setIsLoading(true);
                 try {
                   const response = await apiClient.login(email, pw) as { access_token: string; user_name?: string };
-                  localStorage.setItem('access_token', response.access_token);
+                  setAccessToken(response.access_token);
                   
                   // Backend'den user_name gelmezse email'den oluştur
                   const userName = response.user_name || email.split('@')[0];
-                  localStorage.setItem('user_name', userName);
+                  setUserName(userName);
                   
                   toast({
                     title: "Giriş başarılı",

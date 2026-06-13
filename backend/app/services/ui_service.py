@@ -155,11 +155,7 @@ def build_dashboard(user_id: int, db: Session) -> dict:
     for l in logs:
         if l.weight is None:
             continue
-        pdays = (l.date - user.last_menstrual_period).days
-        if pdays < 0:
-            continue
-        wk = min(40, pdays // 7 + 1)
-        weight_points.append({"w": f"H{wk}", "kg": round(float(l.weight), 1)})
+        weight_points.append({"d": l.date.strftime("%d/%m"), "kg": round(float(l.weight), 1)})
 
     if len(weight_points) > 7:
         weight_points = weight_points[-7:]
