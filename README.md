@@ -27,6 +27,11 @@ Modern, AI destekli gebelik takip ve sağlık yönetim platformu. Anne adayları
 ---
 
 <p align="center">
+  <img src="https://github.com/user-attachments/assets/f0d48cc1-f148-4aff-8b65-649bbf12e028" width="45%" />
+  <img src="https://github.com/user-attachments/assets/2b11c90a-dbd8-4625-8c97-44a5d5f92553" width="45%" />
+</p>
+
+<p align="center">
   <img src="https://github.com/user-attachments/assets/e82ed882-6687-44c1-bc07-db21171b7a4e" width="45%" />
   <img src="https://github.com/user-attachments/assets/614f80e4-7a23-499c-bc08-61211d969020" width="45%" />
 </p>
