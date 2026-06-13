@@ -5,7 +5,6 @@
 **Durum:** Aktif geliştirme — çekirdek özellikler canlı  
 **Platform:** Web (Vite + React)
 
-**Teknik referans:** [`PROJE_KURULUM_VE_TEKNOLOJILER.md`](PROJE_KURULUM_VE_TEKNOLOJILER.md)
 
 ---
 
