@@ -1,110 +1,106 @@
-# 🚀 Bebeğim — Gebelik Takip
+# 🤰 Bebeğim — Gebelik Takip
 
-Full-stack gebelik takip uygulaması: sağlık takibi, takvim, forum, makaleler ve **AI destekli Gebelik Asistanı**.
+Modern, AI destekli gebelik takip ve sağlık yönetim platformu. Anne adaylarının gebelik sürecini baştan sona tek bir platform üzerinden, güvenle ve sağlıkla takip edebilmesi için geliştirilmiştir.
 
-## Bu proje ne yapıyor?
-
-**Bebeğim — Gebelik Takip**, hamilelik sürecinde kullanıcıya yardımcı olmayı hedefleyen bir web uygulamasıdır:
-
-- Giriş ve kayıt
-- Özet panel (dashboard), sağlık ölçümleri ve grafikler
-- Takvim etkinlikleri
-- Makale kütüphanesi
-- Forum (sorular, yanıtlar, beğeniler)
-- “Gebelik Asistan” sohbet ekranı (OpenRouter üzerinden AI destekli)
-- PDF rapor gibi API uçları
-
-<<<<<<< HEAD
-**Veri** sunucuda tutulur: tarayıcıdaki arayüz (frontend), HTTP ile FastAPI sunucusuna (backend) bağlanır; backend **PostgreSQL**e yazar/okur. Bu projede veritabanı pratikte **[Supabase](https://supabase.com)** üzerinde barındırılan PostgreSQL ile kullanılır (`DATABASE_URL`). Yerel bir Postgres sunucusu da aynı şekilde kullanılabilir.
-
- ## Ekran Görüntüleri
-<img width="1919" height="1031" alt="Image" src="https://github.com/user-attachments/assets/6e9888c6-b050-4931-82a3-b286184428a3" />
-
-<img width="1919" height="1029" alt="Image" src="https://github.com/user-attachments/assets/6590575f-cd99-45e7-8de3-22c788933204" />
-
-<img width="1919" height="1028" alt="Image" src="https://github.com/user-attachments/assets/c1fb8e94-b897-4fce-a43a-0a7286f71795" />
-
-<img width="1919" height="1023" alt="Image" src="https://github.com/user-attachments/assets/83b01a79-9f93-4f4c-a953-06f0d1486374" />
-
-<img width="1916" height="1022" alt="Image" src="https://github.com/user-attachments/assets/951d0baf-6e71-4a8b-9979-b67f9ceafbe1" />
-
-<img width="1919" height="1018" alt="Image" src="https://github.com/user-attachments/assets/2cd653db-9d3e-4a08-a3ed-a3db95bda873" />
-
-<img width="1919" height="1032" alt="Image" src="https://github.com/user-attachments/assets/891a2997-ac8e-4253-b482-05f33793aae3" />
-
-<img width="1919" height="1020" alt="Image" src="https://github.com/user-attachments/assets/eae5cbd8-b96b-4966-ade0-a9590e9be68e" />
-
-<img width="1917" height="1035" alt="Image" src="https://github.com/user-attachments/assets/b3d41f62-56a3-49ff-b650-d476a2bebbbc" />
-
-<img width="1919" height="1030" alt="Image" src="https://github.com/user-attachments/assets/902d245c-e341-498d-9bff-443d16665c32" />
-
-<img width="1919" height="1025" alt="Image" src="https://github.com/user-attachments/assets/80bc3c42-1102-4fc2-955b-fd09b5b272b0" />
-
-<img width="1919" height="1016" alt="Image" src="https://github.com/user-attachments/assets/1b66b062-befa-43eb-8bdf-e665846b63f3" />
-
-<img width="1919" height="1032" alt="Image" src="https://github.com/user-attachments/assets/ad05c5f1-9bef-45b4-a3a0-43d11290a20a" />
-
-=======
->>>>>>> 0119623 (projede güncellemeler)
+🔗 **Canlı Demo:** [gebe-takip-sistemi.vercel.app](https://gebe-takip-sistemi.vercel.app)
 
 ---
 
-## 🧠 Tech Stack
+## 🌸 Genel Amaç
 
-- **Frontend:** React + Vite + TypeScript + Tailwind
+Gebe Takip Sistemi; dinamik sağlık veri analizleri, **kullanıcı verileriyle tam entegre çalışan yapay zekâ destekli asistanı** ve topluluk odaklı forum yapısıyla anne adaylarının hamilelik yolculuğundaki en büyük dijital destekçisidir.
+
+### 🧭 Ana Modüller
+* 📊 **Dashboard:** Sürecin genel ve anlık özeti.
+* 🩺 **Sağlık Takibi:** Ölçüm kayıtları, grafiksel trendler ve PDF raporlama.
+* 📅 **Takvim:** Randevu, ilaç ve etkinlik yönetimi.
+* 📚 **Kütüphane:** Kategori bazlı uzman ve rehber içerikler.
+* 💬 **Forum:** Anne adayları arası topluluk ve deneyim paylaşımı.
+* 🤖 **Gebelik Asistanı (AI Chat):** Kişiselleştirilmiş, veriye dayalı akıllı asistan.
+
+---
+
+## 🚀 Modül Detayları
+
+### 🏠 Dashboard (Özet Ekranı)
+Dashboard ekranı, kullanıcının gebelik sürecine dair en kritik verileri tek bir bakışta sunar:
+* **Kullanıcı Karşılama:** İsme özel dinamik karşılama.
+* **Gebelik Bilgisi:** Kavuşmaya kalan gün sayısı, gebelik haftası (Ör: 6. hafta / 40) ve ilerleme yüzdesi.
+* **Bebek Durumu:** Mevcut haftaya ait tahmini ağırlık, boy ve gelişim açıklamaları.
+* **Sağlık Özeti:** Son girilen tansiyon, kan şekeri ve kilo takibi grafiği.
+* **Takvim Özeti:** Yaklaşan etkinlikler ve hatırlatıcılar.
+* **AI Hızlı Erişim:** Yapay zekâ asistanına hızlı geçiş alanı.
+
+### 🩺 Sağlık Takibi & Raporlama
+Kullanıcıların vital ve fiziksel sağlık verilerini kayıt altında tuttuğu modüldür.
+* **Girilen Veriler:** Kilo, su tüketimi, tansiyon (sistolik / diastolik), kan şekeri, nabız ve kişisel notlar.
+* **Özellikler:** Son kayıtların listelenmesi, grafiksel trend gösterimi ve kolay yeni ölçüm ekleme.
+* **📄 PDF Rapor Oluşturma:** Kullanıcı, seçtiği başlangıç ve bitiş tarihlerine göre (veya tüm süreci kapsayacak şekilde) sağlık verilerini filtreleyip doktoruna sunmak üzere PDF formatında indirebilir.
+
+### 📅 Takvim & Etkinlik Yönetimi
+Randevu, ilaç ve etkinliklerin organize edildiği dinamik alan.
+* **Yeni Etkinlik Ekleme:** Tarih, başlık, saat, konum (isteğe bağlı) ve kategori seçimi.
+    * *Kategoriler:* İlaç, Randevu, Etkinlik
+* **Görünüm:** Aylık takvim ekranı ve tüm etkinliklerin kronolojik listesi.
+
+### 📚 Kütüphane (Bilgi Merkezi)
+Hamilelik sürecine yönelik rehber yazıların ve uzman makalelerinin yer aldığı bölümdür.
+* **Özellikler:** Kelime bazlı konu arama, kategori filtreleme.
+* **İçerik Detayı:** Her içerikte başlık, açıklama, okuma süresi, beğeni sayısı ve kategori etiketi bulunur.
+
+### 💬 Forum (Topluluk)
+Anne adaylarının deneyim ve soru paylaştığı, birbirlerine destek olduğu sosyal alan.
+* **Kategoriler:** Trimester 1-2-3, Beslenme & Takviyeler, Sağlık & Şikayetler, Bebek Alışverişi, Doğum Hazırlığı, Ruh Sağlığı, İsim Önerileri, Diğer.
+* **Özellikler:** Yeni başlık açma, başlıklar altında yanıt sistemi, beğeni mekanizması, kullanıcı ve zaman damgası bilgisi.
+
+### 🤖 Gebelik Asistanı (AI Chat) 
+Sıradan sohbet botlarının aksine, platformun yapay zekâ asistanı **kullanıcının profil ve sağlık verilerine doğrudan erişim yeteneğine** sahiptir. Sistem, kullanıcıyı tanır ve tamamen kişiselleştirilmiş bir deneyim sunar:
+* **Veri Duyarlı Analiz:** Kullanıcının sisteme kaydettiği anlık ve geçmiş sağlık verilerini (Tansiyon, Kan Şekeri, Kilo, Nabız) okuyabilir ve analiz edebilir.
+* **Kişiselleştirilmiş Yorumlama:** "Bugünkü tansiyon değerim nasıl?" veya "Şeker ölçümlerimde bir anormallik var mı?" gibi sorulara, kullanıcının veri tabanındaki güncel kayıtlarını inceleyerek tıbbi referanslar dahilinde akıllı yorumlar sunar.
+* **Haftaya Özel Dinamik Bilgilendirme:** Kullanıcının Son Adet Tarihi (SAT) üzerinden hesaplanan güncel gebelik haftasını (Ör: 12. hafta) otomatik olarak bilir. Gelişim tavsiyelerini, semptom yorumlarını ve beslenme önerilerini tamamen o haftaya özel olarak şekillendirir.
+* **Proaktif Uyarı Mekanizması:** Sağlık verilerinde normal dışı bir trend (örneğin ardışık yüksek tansiyon) sezdiğinde kullanıcıyı doktoruna danışması yönünde rehberlik eder.
+---
+
+## 👥 Kullanıcı ve Sistem Yönetimi
+
+### 👤 Giriş & Kayıt Sistemi
+* **Giriş:** E-posta, Şifre ve Şifremi Unuttum akışı.
+* **Kayıt:** Ad Soyad, E-posta, Şifre, **Son Adet Tarihi (SAT)** ve Başlangıç Kilo Bilgisi *(Gebelik hesaplamaları ve AI bağlamı bu verilere göre dinamik oluşturulur)*.
+
+### 🌙 Profil & Arayüz
+* Kullanıcı bilgilerini düzenleme.
+* **Karanlık / Açık Mod (Dark/Light Mode)** geçiş desteği.
+* Güvenli çıkış yapma seçeneği.
+
+### 🔔 Bildirim Sistemi
+* Forum etkileşimleri (Açılan başlığa gelen cevaplar, beğeniler vb.) için sistem içi anlık bildirimler.
+* Okundu olarak işaretleme ve dinamik bildirim sayacı.
+Full-stack gebelik takip uygulaması: sağlık takibi, takvim, forum, makaleler ve **AI destekli Gebelik Asistanı**.
+
+## Tech Stack
+
+- **Frontend:** React + Vite 
 - **Backend:** FastAPI
 - **Database:** PostgreSQL (Supabase)
 - **ORM:** SQLAlchemy + Alembic
 - **AI:** OpenRouter (LLM API)
 
----
+## Ortam Değişkenleri
 
-## ✨ Özellikler
-
-- 👤 Kullanıcı giriş / kayıt (JWT)
-- 📊 Sağlık takibi & grafikler
-- 📅 Takvim & etkinlikler
-- 📚 Makale kütüphanesi
-- 💬 Forum sistemi
-- 🤖 AI Gebelik Asistanı
-- 📄 PDF sağlık raporu
-
----
-
-## 🏗️ Mimari
-
-<<<<<<< HEAD
-```env
-DATABASE_URL=postgresql://postgres.[PROJECT_REF]:[YOUR_PASSWORD]@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
-OPENROUTER_API_KEY=sk-or-v1-...
+### `backend/.env`
+# Veritabanı Bağlantısı (Supabase veya Yerel)
+DATABASE_URL=postgresql://...
+# OpenRouter AI Ayarları
+OPENROUTER_API_KEY=sk-or-v1-YOUR_OPENROUTER_KEY_HERE
 OPENROUTER_MODEL=openai/gpt-oss-120b:free
-```
+OPENROUTER_HTTP_REFERER=http://localhost:8080
+OPENROUTER_APP_TITLE=Gebelik Asistani
 
-- Gerçek host, port, kullanıcı ve şifreyi **kendi Supabase panelinizdeki** “Connection string” alanından kopyalayın; yukarıdaki satır sadece biçim örneğidir.
-- `OPENROUTER_API_KEY` sohbet asistanı için zorunludur; anahtar [openrouter.ai](https://openrouter.ai/) hesabından alınır (aşağıdaki **10. bölüm**).
-- **Şifreleri repoya eklemeyin**; `.env` dosyası `.gitignore` içinde kalmalıdır. `alembic upgrade head` çalıştırırken `DATABASE_URL` ortam değişkeni yeterlidir (`alembic/env.py` bunu okuyup `sqlalchemy.url` olarak ayarlar).
-
-### Yerel PostgreSQL
-
-Kendi makinenizde Postgres kullanacaksanız veritabanı oluşturup benzer şekilde:
-
-```env
-DATABASE_URL=postgresql://KULLANICI_ADI:SIFRE@localhost:5432/VERITABANI_ADI
-=======
-```
-Frontend (React)
-↓
-FastAPI (Backend)
-↓
-SQLAlchemy (ORM)
-↓
-PostgreSQL (Supabase)
->>>>>>> 0119623 (projede güncellemeler)
-```
-
+### `frontend/.env`
+VITE_API_URL=http://localhost:8000/api/v1
 ---
 
-## 🚀 Hızlı Başlangıç
+## Hızlı Başlangıç
 
 ### Backend
 
@@ -124,211 +120,25 @@ cd frontend
 npm install
 npm run dev
 ```
+---
+## Veritabanı Mimarisi
+
+* **Veritabanı:** PostgreSQL (Supabase Cloud)
+* **ORM:** SQLAlchemy
+* **Migrasyon:** Alembic (`alembic upgrade head`)
 
 ---
 
-## ⚙️ Ortam Değişkenleri
+## OpenRouter ile AI Entegrasyonu (Gebelik Asistanı)
 
-### `backend/.env`
+**Sohbet Akışı:** `Frontend (BabyChat.tsx)` ➔ `FastAPI Backend (Veri & Bağlam Ekleme)` ➔ `OpenRouter API` ➔ `PostgreSQL (Kayıt)` ➔ `Frontend (Yanıt)`
 
-```env
-DATABASE_URL=postgresql://...
-OPENROUTER_API_KEY=sk-or-v1-...
-OPENROUTER_MODEL=openai/gpt-oss-120b:free
-OPENROUTER_HTTP_REFERER=http://localhost:8080
-OPENROUTER_APP_TITLE=Gebelik Asistani
-```
+### Model ve Ortam Değişkenleri (`backend/.env`)
 
-### `frontend/.env`
+* **Kullanılan Model:** `openai/gpt-oss-120b:free`
 
-```env
-VITE_API_URL=http://localhost:8000/api/v1
-```
+###  API Anahtarı Nasıl Alınır?
+1. [openrouter.ai](https://openrouter.ai/) sitesinde hesap açın.
+2. **API Keys** bölümünden yeni bir anahtar üretin.
+3. Bu anahtarı `backend/.env` içindeki `OPENROUTER_API_KEY` alanına yapıştırıp backend'i (`uvicorn`) yeniden başlatın.
 
----
-
-## 📁 Proje Yapısı
-
-| Klasör | Açıklama |
-|---|---|
-| `frontend/` | React arayüz |
-| `backend/` | FastAPI backend |
-| `prodocs/` | AI & sistem dokümantasyonu |
-| `DesignSystem.md` | UI tasarım sistemi |
-
-
----
-
-## 🔌 API Genel Yapı
-
-Tüm endpointler: `/api/v1`
-
-| Modül | İşlev |
-|---|---|
-| Auth | login / register |
-| Dashboard | kullanıcı özeti |
-| Health | ölçümler & grafikler |
-| Calendar | etkinlikler |
-| Forum | soru/cevap sistemi |
-| Chat | AI Gebelik Asistanı |
-
----
-
-## 🤖 AI Sistemi (Gebelik Asistanı)
-
-<<<<<<< HEAD
-| Araç / kütüphane | Ne için kullanılıyor? |
-|------------------|------------------------|
-| **FastAPI** | HTTP API, otomatik OpenAPI (`/docs`) |
-| **Uvicorn** | ASGI sunucusu (uygulamayı çalıştırma) |
-| **Pydantic** | İstek/yanıt modelleri ve doğrulama |
-| **SQLAlchemy** | ORM: tablolar ve sorgular Python nesneleriyle |
-| **Alembic** | Veritabanı şema migrasyonları (`alembic/` klasörü) |
-| **psycopg2-binary** | PostgreSQL sürücüsü (Supabase veya yerel Postgres’e bağlanır) |
-| **python-jose** | JWT işlemleri |
-| **passlib** + **bcrypt** | Parola özetleme |
-| **python-dotenv** | `.env` dosyasından `DATABASE_URL` vb. okuma |
-| **httpx** | OpenRouter’a `POST /api/v1/chat/completions` istekleri (`openrouter_client.py`) |
-| **pytest** + **httpx** | API testleri |
-| **OpenRouter** | LLM sağlayıcısı; varsayılan model **OpenAI: gpt-oss-120b (free)** → `openai/gpt-oss-120b:free` |
-| **Supabase** (altyapı) | Barındırılan **PostgreSQL**; ekstra bir `supabase` Python paketi yok, yalnızca Postgres URI’si (`DATABASE_URL`) |
-=======
-- OpenRouter API kullanılır
-- Model: `openai/gpt-oss-120b:free`
-- Chat backend üzerinden çalışır
-- Sohbet geçmişi PostgreSQL'e kaydedilir
->>>>>>> 0119623 (projede güncellemeler)
-
-### Akış
-
-```
-Frontend → FastAPI → OpenRouter → Response → DB
-```
-
----
-- **Tek kalıcı veri deposu:** **PostgreSQL**. Projede bu genelde **Supabase** projesindeki Postgres örneğidir; bağlantı `DATABASE_URL` ile verilir.
-- **ORM:** SQLAlchemy (`backend/app/models/`, `backend/app/core/database.py`).
-- **Şema değişiklikleri:** Alembic migrasyonları (`alembic upgrade head`).
-
-<<<<<<< HEAD
-**Frontend ↔ Supabase:** Arayüz doğrudan Supabase’e bağlanmaz; `@supabase/supabase-js` kullanılmaz. Tarayıcı yalnızca **kendi FastAPI backend’inize** istek atar; veritabanı erişimi yalnızca backend sürecinde olur. Bu sayede RLS veya Supabase Dashboard ile yine aynı Postgres üzerinde yönetim yapabilirsiniz; uygulama kodu tarafında “bulut veritabanı = Supabase Postgres URI” modelidir.
-
-**Ayrı bir “frontend içi veritabanı” yoktur**; geliştirmede veri her zaman **backend → PostgreSQL (Supabase veya yerel)** hattındadır.
-
----
-## 9. Veritabanı katmanı ve Supabase’in yeri
-=======
-## 🗄️ Veritabanı
->>>>>>> 0119623 (projede güncellemeler)
-
-- **PostgreSQL** (Supabase)
-- **ORM:** SQLAlchemy
-- **Migration:** Alembic
-
-> 📌 **Not:** Frontend doğrudan veritabanına bağlanmaz.
-
----
-
-<<<<<<< HEAD
-## 10. OpenRouter ile AI entegrasyonu (Gebelik Asistanı)
-
-**Bebeğimle konuş** ekranındaki yanıtlar, tarayıcıdan doğrudan bir modele gitmez. Frontend `POST /api/v1/chat/assistant` çağırır; backend bağlamı hazırlayıp **[OpenRouter](https://openrouter.ai/)** üzerinden LLM’e iletir ve yanıtı PostgreSQL’deki sohbet tablolarına kaydeder.
-
-### Kullanılan model
-
-| OpenRouter panelinde görünen ad | Ortam değişkeni / API `model` değeri |
-|--------------------------------|--------------------------------------|
-| **OpenAI: gpt-oss-120b (free)** | `openai/gpt-oss-120b:free` |
-
-Bu, OpenRouter’daki ücretsiz katmanlı **gpt-oss-120b** modelidir. `OPENROUTER_MODEL` tanımlı değilse backend aynı değeri varsayılan olarak kullanır (`backend/app/services/openrouter_client.py`).
-
-### Ortam değişkenleri (`backend/.env`)
-
-| Değişken | Zorunlu | Açıklama | Varsayılan |
-|----------|---------|----------|------------|
-| `OPENROUTER_API_KEY` | Evet | OpenRouter API anahtarı (`sk-or-v1-...`) | — |
-| `OPENROUTER_MODEL` | Hayır | Model kimliği | `openai/gpt-oss-120b:free` |
-| `OPENROUTER_HTTP_REFERER` | Hayır | OpenRouter `HTTP-Referer` başlığı | `http://localhost:5173` |
-| `OPENROUTER_APP_TITLE` | Hayır | OpenRouter `X-Title` başlığı (ASCII) | `Gebelik Asistani` |
-
-Örnek `backend/.env` satırları için `backend/.env.example` dosyasına bakın. API anahtarını repoya eklemeyin.
-
-### Anahtar alma
-
-1. [openrouter.ai](https://openrouter.ai/) üzerinde hesap açın.
-2. **API Keys** bölümünden yeni anahtar oluşturun.
-3. Anahtarı `backend/.env` içindeki `OPENROUTER_API_KEY` alanına yapıştırın.
-4. Backend’i yeniden başlatın (`uvicorn` süreci `.env` değişikliklerini yeniden yükler).
-
-### Kodda akış (özet)
-
-```
-BabyChat.tsx  →  POST /api/v1/chat/assistant
-       →  chat_service.py  →  assistant_service.py (sistem promptu + bağlam)
-       →  openrouter_client.chat_completion()
-       →  https://openrouter.ai/api/v1/chat/completions
-       →  yanıt chat_messages tablosuna yazılır
-```
-
-| Katman | Dosya |
-|--------|-------|
-| OpenRouter istemcisi | `backend/app/services/openrouter_client.py` |
-| Prompt ve bağlam | `backend/app/services/assistant_service.py` |
-| Sohbet CRUD + orchestration | `backend/app/services/chat_service.py` |
-| HTTP uçları | `backend/app/routers/chat_router.py` |
-| Arayüz | `frontend/src/pages/BabyChat.tsx` |
-
-İstemci `httpx` ile OpenRouter’a istek atar; istek gövdesinde `reasoning: { enabled: true, exclude: true }` kullanılır (iç düşünme ayrı alanda kalır, sohbet metni `content` üzerinden okunur). Zaman aşımı yaklaşık **90 saniye**dir.
-
-### Hata kodları (kullanıcıya yansıyan)
-
-| Durum | HTTP |
-|--------|------|
-| `OPENROUTER_API_KEY` yok / boş | 503 |
-| OpenRouter veya ağ hatası | 502 |
-| Yanıt süresi aşıldı | 504 |
-
-### Ek dokümantasyon
-
-Detaylı mimari ve güvenlik kuralları `prodocs/` altında: `openrouter-entegrasyonu.md`, `gebelik-asistani-mimari.md`, `chat-akisi.md`, `sistem-promptlari.md`.
-
----
-
-## 11. Sorun giderme (kısa)
-
-| Durum | Kontrol |
-|--------|---------|
-| Backend açılmıyor / DB hatası | `.env` içinde `DATABASE_URL` doğru mu; Supabase’te proje uyku modundan uyandı mı; yerel Postgres ise servis çalışıyor mu; `alembic upgrade head` çalıştı mı? |
-| Frontend API’ye ulaşamıyor | Backend 8000’de mi; `VITE_API_URL` doğru mu; tarayıcı konsolunda CORS veya ağ hatası |
-| CORS hatası | Backend `app/main.py` içinde `CORSMiddleware` izin verilen origin listesi; geliştirme adresiniz (ör. `http://localhost:8080`) listede veya regex ile kapsanıyor mu? |
-| Sohbet “AI yapılandırılmamış” / 503 | `backend/.env` içinde `OPENROUTER_API_KEY` var mı; backend yeniden başlatıldı mı? |
-| Sohbet 502 / boş yanıt | `OPENROUTER_MODEL` doğru mu (`openai/gpt-oss-120b:free`); OpenRouter’da ücretsiz model kotası dolmuş olabilir |
-
----
-
-
-
-
-=======
-## 🌐 URL'ler (Dev)
-
-| Servis | URL |
-|---|---|
-| Frontend | http://localhost:8080 |
-| Backend | http://localhost:8000 |
-| API Docs | http://localhost:8000/docs |
-
----
-
-## 📌 Özet
-
-Bu proje:
-
-- ⚡ Modern full-stack mimari (React + FastAPI)
-- 🔐 JWT tabanlı güvenlik
-- 📊 Sağlık + veri takibi sistemi
-- 🤖 AI destekli danışma sistemi
-- ☁️ Supabase ile cloud PostgreSQL
-
-üzerine kurulmuştur.
->>>>>>> 0119623 (projede güncellemeler)
