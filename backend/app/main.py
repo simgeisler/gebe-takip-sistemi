@@ -1,21 +1,24 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse, RedirectResponse, Response
+
 app = FastAPI(title="Bebeğim- Gebelik Takip API", version="0.1.0")
 
-origins = [
-    "http://localhost:5173",
-    "https://gebe-takip-sistemi.vercel.app"
-]
+API_PREFIX = "/api/v1"
 
+# CORS TEK VE DOĞRU
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=[
+        "http://localhost:5173",
+        "https://gebe-takip-sistemi.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-API_PREFIX = "/api/v1"
 
 from .routers.auth_router import router as auth_router
 from .routers.calendar_router import router as calendar_router
@@ -31,34 +34,7 @@ from .routers.report_router import router as report_router
 from .routers.upcoming_router import router as upcoming_router
 from .routers.wellbeing_router import router as wellbeing_router
 
-app = FastAPI(title="Bebeğim- Gebelik Takip API", version="0.1.0")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:4173",
-        "http://127.0.0.1:4173",
-        "http://localhost:8080",
-        "http://127.0.0.1:8080",
-        "http://localhost:8081",
-        "http://127.0.0.1:8081",
-        "http://localhost:19006",
-        "http://127.0.0.1:19006",
-        "http://[::1]:5173",
-        "http://[::1]:4173",
-        "http://[::1]:8080",
-        "http://[::1]:8081",
-        "http://[::1]:19006",
-    ],
-    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$",
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse, RedirectResponse, Response
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
