@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+app = FastAPI(title="Bebeğim- Gebelik Takip API", version="0.1.0")
+
 origins = [
     "http://localhost:5173",
     "https://gebe-takip-sistemi.vercel.app"
@@ -12,6 +14,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+API_PREFIX = "/api/v1"
 
 from .routers.auth_router import router as auth_router
 from .routers.calendar_router import router as calendar_router
@@ -26,8 +30,6 @@ from .routers.notification_router import router as notification_router
 from .routers.report_router import router as report_router
 from .routers.upcoming_router import router as upcoming_router
 from .routers.wellbeing_router import router as wellbeing_router
-
-API_PREFIX = "/api/v1"
 
 app = FastAPI(title="Bebeğim- Gebelik Takip API", version="0.1.0")
 app.add_middleware(
