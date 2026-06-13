@@ -85,18 +85,18 @@ Full-stack gebelik takip uygulaması: sağlık takibi, takvim, forum, makaleler 
 - **ORM:** SQLAlchemy + Alembic
 - **AI:** OpenRouter (LLM API)
 
-## Ortam Değişkenleri
+## Ortam Değişkenleri (.env)
 
-### `backend/.env`
-# Veritabanı Bağlantısı (Supabase veya Yerel)
-DATABASE_URL=postgresql://...
-# OpenRouter AI Ayarları
-OPENROUTER_API_KEY=sk-or-v1-YOUR_OPENROUTER_KEY_HERE
+###  Backend (`backend/.env`)
+```env
+DATABASE_URL=postgresql://postgres.[REF]:[PASSWORD]@[aws-0-eu-central-1.pooler.supabase.com:5432/postgres](https://aws-0-eu-central-1.pooler.supabase.com:5432/postgres)
+OPENROUTER_API_KEY=sk-or-v1-YOUR_KEY_HERE
 OPENROUTER_MODEL=openai/gpt-oss-120b:free
 OPENROUTER_HTTP_REFERER=http://localhost:8080
-OPENROUTER_APP_TITLE=Gebelik Asistani
+OPENROUTER_APP_TITLE=GebelikAsistani
 
-### `frontend/.env`
+###  Frontend (`frontend/.env`)
+```env
 VITE_API_URL=http://localhost:8000/api/v1
 ---
 
@@ -141,4 +141,13 @@ npm run dev
 1. [openrouter.ai](https://openrouter.ai/) sitesinde hesap açın.
 2. **API Keys** bölümünden yeni bir anahtar üretin.
 3. Bu anahtarı `backend/.env` içindeki `OPENROUTER_API_KEY` alanına yapıştırıp backend'i (`uvicorn`) yeniden başlatın.
+
+## 🚀 Geliştirme Vizyonu (Roadmap)
+
+Future-proof bir yapıyla uygulamanın gelecekte kazanması planlanan özellikler:
+- [ ] **Mobil Uygulama:** iOS ve Android (React Native / Flutter) sürümlerinin geliştirilmesi.
+- [ ] **Gelişmiş AI Analiz Sistemi:** Trend analizlerine dayalı erken uyarı ve anomali tespiti.
+- [ ] **Doktor Paneli:** Anne adayının onay verdiği doktorun verileri canlı takip edebileceği web arayüzü.
+- [ ] **Akıllı Bildirimler:** Su içme, ilaç saati ve randevular için anlık push bildirimleri.
+- [ ] **Çoklu Dil Desteği:** Global kullanıcı kitlesi için entegrasyon.
 
