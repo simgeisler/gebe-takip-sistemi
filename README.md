@@ -24,6 +24,28 @@ Modern, AI destekli gebelik takip ve sağlık yönetim platformu. Anne adayları
   <img src="https://github.com/user-attachments/assets/3a48542c-96c6-4cdb-95ec-f6cd1d42fd12" width="45%" />
 </p>
 
+---
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/e82ed882-6687-44c1-bc07-db21171b7a4e" width="45%" />
+  <img src="https://github.com/user-attachments/assets/614f80e4-7a23-499c-bc08-61211d969020" width="45%" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/291f5b66-a7ad-4a7b-9c4a-6cb36e697aff" width="45%" />
+  <img src="https://github.com/user-attachments/assets/4f1a44c1-be65-491f-bdc4-64e2f1a76c5e" width="45%" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ff4662ad-66ad-4c58-a8ef-c2ba7ffcff40" width="45%" />
+  <img src="https://github.com/user-attachments/assets/1ed53e63-929c-4a78-969f-26ac84c4179d" width="45%" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/425f3902-0fd8-42d2-8489-886394d18041" width="45%" />
+  <img src="https://github.com/user-attachments/assets/8083d4ae-63df-4d6b-be34-bb48be40e5a3" width="45%" />
+</p>
+
 ## 🌸 Genel Amaç
 
 Gebe Takip Sistemi; dinamik sağlık veri analizleri, **kullanıcı verileriyle tam entegre çalışan yapay zekâ destekli asistanı** ve topluluk odaklı forum yapısıyla anne adaylarının hamilelik yolculuğundaki en büyük dijital destekçisidir.
