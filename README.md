@@ -77,6 +77,22 @@ Sıradan sohbet botlarının aksine, platformun yapay zekâ asistanı **kullanı
 * Okundu olarak işaretleme ve dinamik bildirim sayacı.
 Full-stack gebelik takip uygulaması: sağlık takibi, takvim, forum, makaleler ve **AI destekli Gebelik Asistanı**.
 
+## 📁 Proje Dosya Yapısı
+
+/frontend   → Arayüz kodu (React + Vite) – mobil (iOS / Android) için genişletilebilir  
+/backend    → API ve iş mantığı (FastAPI)  
+/prodocs    → Yapay zekâ ajanları için geliştirme referans dosyaları  
+
+.gitignore   → Gereksiz dosyaların repoya girmesini engeller  
+README.md    → Uygulamanın amacı ve kurulum bilgileri  
+.env.example → Örnek environment değişkenleri (API anahtarları olmadan)  
+
+PRD.md          → Projenin amacı, problem tanımı ve temel özellikler  
+tech-stack.md   → Kullanılan teknolojiler ve AI kullanım açıklamaları  
+Plan.md         → Geliştirme adımları ve kullanıcı hikayeleri  
+DesignSystem.md → UI tasarım kuralları (renk, font, component yapısı)  
+Progress.md     → Geliştirme süreci ve yapılan işler  
+
 ## Tech Stack
 
 - **Frontend:** React + Vite 
