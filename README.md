@@ -87,40 +87,45 @@ Full-stack gebelik takip uygulaması: sağlık takibi, takvim, forum, makaleler 
 
 ## Ortam Değişkenleri (.env)
 
-###  Backend (`backend/.env`)
-```env
-DATABASE_URL=postgresql://postgres.[REF]:[PASSWORD]@[aws-0-eu-central-1.pooler.supabase.com:5432/postgres](https://aws-0-eu-central-1.pooler.supabase.com:5432/postgres)
-OPENROUTER_API_KEY=sk-or-v1-YOUR_KEY_HERE
-OPENROUTER_MODEL=openai/gpt-oss-120b:free
-OPENROUTER_HTTP_REFERER=http://localhost:8080
-OPENROUTER_APP_TITLE=GebelikAsistani
+### Backend (`backend/.env`)
 
-###  Frontend (`frontend/.env`)
-```env
-VITE_API_URL=http://localhost:8000/api/v1
+    DATABASE_URL=postgresql://postgres.[REF]:[PASSWORD]@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
+    OPENROUTER_API_KEY=sk-or-v1-YOUR_KEY_HERE
+    OPENROUTER_MODEL=openai/gpt-oss-120b:free
+    OPENROUTER_HTTP_REFERER=http://localhost:8080
+    OPENROUTER_APP_TITLE=GebelikAsistani
+
+### Frontend (`frontend/.env`)
+
+    VITE_API_URL=http://localhost:8000/api/v1
+
 ---
 
 ## Hızlı Başlangıç
 
 ### Backend
 
-```bash
-cd backend
-python -m venv .venv
-.\.venv\Scripts\activate
-pip install -r requirements.txt
-alembic upgrade head
-uvicorn main:app --reload --port 8000
-```
+    cd backend
+    python -m venv .venv
+
+    # Windows:
+    .venv\Scripts\activate
+
+    # Mac/Linux:
+    source .venv/bin/activate
+
+    pip install -r requirements.txt
+    alembic upgrade head
+    uvicorn main:app --reload --port 8000
+
+---
 
 ### Frontend
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
----
+    cd frontend
+    npm install
+    npm run dev
+    
 ## Veritabanı Mimarisi
 
 * **Veritabanı:** PostgreSQL (Supabase Cloud)
